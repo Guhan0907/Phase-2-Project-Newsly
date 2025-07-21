@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const BASE_URL = "https://api.nytimes.com/svc/topstories/v2";
-const BASE_URL = 'https://api.nytimes.com/svc/topstories/v';
+const BASE_URL = "https://api.nytimes.com/svc/topstories/v2";
+// const BASE_URL = "https://api.nytimes.com/svc/topstories/v";
 const API_KEY = import.meta.env.VITE_NYT_API_KEY;
 
 export const fetchTopStories = async () => {

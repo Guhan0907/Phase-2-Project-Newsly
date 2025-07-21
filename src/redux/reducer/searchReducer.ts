@@ -1,7 +1,7 @@
 import { SET_SEARCH_QUERY } from "../action/searchAction";
 import type { SearchState } from "../type";
 
-const initialState:SearchState = {
+const initialState: SearchState = {
   query: "",
 };
 
