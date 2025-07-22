@@ -37,11 +37,9 @@ const ArticleDetail = () => {
   const isSaved = favourites.includes(article.url);
 
   // below useEffect is for the history option
-  useEffect(() => {
-    if (article.url) {
-      dispatch(addToHistory(article.url));
-    }
-  }, [article.url]);
+ useEffect(() => {
+  dispatch(addToHistory(article.url))
+ },[article.url])
 
   if (!article) {
     return (

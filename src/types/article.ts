@@ -24,6 +24,7 @@ export interface NYTArticle {
   subsection: string;
   section: string;
   des_facet?: string[];
+  isRead : boolean;
 
   // Top Stories & Archive
   multimedia?: {

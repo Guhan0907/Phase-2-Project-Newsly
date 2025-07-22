@@ -131,12 +131,18 @@ import FeaturedNewsCard from "../../components/FeaturedNewsCard";
 import CompactNewsGrid from "../../components/CompactNewsGrid";
 import NewsFilterBar from "../../components/NewsFilterBar";
 import { useMemo } from "react";
+import type { NYTArticle } from "../../types/article";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { featured, filtered, loading, error } = useSelector(
     (state: RootState) => state.articles,
   );
+  // for the history data 
+  const readHistory = useSelector((state: RootState) => state.history);
+    const isRead = (articleUrl: string) => {
+    return readHistory.includes(articleUrl);
+  };
 
   const [storyType, setStoryType] = useState("top");
   const [initialLoaded, setInitialLoaded] = useState(false);
@@ -200,8 +206,14 @@ const HomePage = () => {
       return matchesSection;
     });
   }, [filtered, filters]);
-
   console.log(filteredArticles, "----- ");
+
+
+      const articlesWithReadStatus = filteredArticles.map((article) => ({
+    ...article,  // Spread original article
+    isRead: isRead(article.url),  // Add `isRead` dynamically
+  }));
+
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -230,7 +242,8 @@ const HomePage = () => {
             : "Archived Stories (July 2024)"}
       </Typography>
 
-      <CompactNewsGrid articles={filteredArticles} />
+      {/* <CompactNewsGrid articles={filteredArticles} /> */}
+      <CompactNewsGrid articles={articlesWithReadStatus} />
     </Container>
   );
 };
