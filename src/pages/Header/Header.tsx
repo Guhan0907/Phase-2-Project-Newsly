@@ -22,7 +22,6 @@ import {
   fetchArticlesRequest,
   fetchArticlesSuccess,
   fetchFeaturedSuccess,
-  setQuery,
   setSearchMode,
 } from "../../redux/action/articlesAction";
 import { type AppDispatch, type RootState } from "../../redux/store";
@@ -195,6 +194,11 @@ const Header = ({ onLogout, user }: HeaderProps) => {
                 >
                   <Logout fontSize="small" sx={{ mr: 1 }} /> Logout
                 </MenuItem>
+                <MenuItem onClick={() => navigate("/history")}>
+  {/* <HistoryIcon fontSize="small" sx={{ mr: 1 }} /> */}
+  View Reading History
+</MenuItem>
+
               </Menu>
             </>
           )}

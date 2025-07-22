@@ -23,10 +23,11 @@ import {
 // recently added
 import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
+import { useEffect } from "react";
+import { addToHistory } from "../../redux/action/historyActions";
 
 const ArticleDetail = () => {
   const { state } = useLocation();
-  //   const article: NYTArticle | undefined = state?.article;
   const article: NYTArticle = state?.article;
 
   const navigate = useNavigate();
@@ -36,6 +37,13 @@ const ArticleDetail = () => {
   const dispatch = useDispatch<AppDispatch>();
   const favourites = useSelector((state: RootState) => state.favourites);
   const isSaved = favourites.includes(article.url);
+
+  // below useEffect is for the history option
+  useEffect(() => {
+    if (article.url) {
+      dispatch(addToHistory(article.url))
+    }
+  },[article.url])
 
   if (!article) {
     return (
@@ -110,14 +118,6 @@ const ArticleDetail = () => {
         lineHeight: 1.75,
       }}
     >
-      {/* <Button
-        startIcon={<ArrowBackIcon />}
-        onClick={() => navigate(-1)}
-        sx={{ mb: 3 }}
-      >
-        Back
-      </Button> */}
-
       <Typography
         variant={isMobile ? "h5" : "h3"}
         fontWeight="bold"

@@ -7,6 +7,7 @@ import logger from "redux-logger";
 import articlesReducer from "./reducer/articleReducer";
 import type { ArticlesAction } from "./action/articlesAction";
 import { favouritesReducer } from "./reducer/favouritesReducer";
+import historyReducer from "./reducer/historyReducer";
 // import type { RootState } from "./type";
 
 const middlewareList = [thunk, logger];
@@ -17,13 +18,14 @@ export const rootReducer = combineReducers({
   // search: searchReducer,
   articles: articlesReducer,
   favourites: favouritesReducer,
+  history: historyReducer,
 });
 
 // persist config
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["favourites"],
+  whitelist: ["favourites" , "history"]
 };
 
 // persisted reducer
