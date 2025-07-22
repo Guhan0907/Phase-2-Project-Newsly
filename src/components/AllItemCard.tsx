@@ -70,8 +70,6 @@ const AllItemsCard = ({
 
 export default AllItemsCard;
 
-
-
 // import { useNavigate } from "react-router-dom";
 // import {
 //   Card,

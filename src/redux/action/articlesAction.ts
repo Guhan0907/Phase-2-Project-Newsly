@@ -1,5 +1,6 @@
 import type { Dispatch } from "redux";
 import type { NYTArticle } from "../../types/article";
+import type { AddToHistoryAction } from "./historyActions";
 
 export const FETCH_ARTICLES_REQUEST = "FETCH_ARTICLES_REQUEST";
 export const FETCH_ARTICLES_SUCCESS = "FETCH_ARTICLES_SUCCESS";
@@ -74,3 +75,4 @@ export type ArticlesAction =
   | fetchFeaturedSuccessAction
   | setQueryAction
   | setSearchModeAction;
+// | AddToHistoryAction

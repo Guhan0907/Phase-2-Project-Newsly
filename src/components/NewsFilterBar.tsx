@@ -4,96 +4,6 @@
 //   InputLabel,
 //   MenuItem,
 //   Select,
-//   TextField,
-//   type SelectChangeEvent,
-// } from "@mui/material";
-// import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-// import dayjs from "dayjs";
-// import { useState } from "react";
-
-// interface Props {
-//   storyType: string;
-//   section: string;
-//   archiveDate: Date;
-//   onStoryTypeChange: (value: string) => void;
-//   onSectionChange: (value: string) => void;
-//   onDateChange: (date: Date) => void;
-// }
-
-// const NewsFilterBar = ({
-//   storyType,
-//   section,
-//   archiveDate,
-//   onStoryTypeChange,
-//   onSectionChange,
-//   onDateChange,
-// }: Props) => {
-//   return (
-//     <Box
-//       display="flex"
-//       gap={2}
-//       flexWrap="wrap"
-//       alignItems="center"
-//       justifyContent="space-between"
-//       mb={3}
-//     >
-//       <FormControl size="small" sx={{ minWidth: 180 }}>
-//         <InputLabel id="story-type-label">Story Type</InputLabel>
-//         <Select
-//           labelId="story-type-label"
-//           value={storyType}
-//           onChange={(e: SelectChangeEvent) => onStoryTypeChange(e.target.value)}
-//           label="Story Type"
-//         >
-//           <MenuItem value="top">Top Stories</MenuItem>
-//           <MenuItem value="trending">Trending</MenuItem>
-//           <MenuItem value="archived">Archived</MenuItem>
-//         </Select>
-//       </FormControl>
-
-//       <FormControl size="small" sx={{ minWidth: 160 }}>
-//         <InputLabel id="section-label">Section</InputLabel>
-//         <Select
-//           labelId="section-label"
-//           value={section}
-//           onChange={(e: SelectChangeEvent) => onSectionChange(e.target.value)}
-//           label="Section"
-//         >
-//           <MenuItem value="all">All</MenuItem>
-//           <MenuItem value="world">World</MenuItem>
-//           <MenuItem value="technology">Technology</MenuItem>
-//           <MenuItem value="sports">Sports</MenuItem>
-//           <MenuItem value="science">Science</MenuItem>
-//           <MenuItem value="health">Health</MenuItem>
-//           <MenuItem value="arts">Arts</MenuItem>
-//         </Select>
-//       </FormControl>
-
-//       {storyType === "archived" && (
-//         <DatePicker
-//           views={["year", "month"]}
-//           label="Archive Date"
-//           value={dayjs(archiveDate)}
-//           onChange={(newValue) => onDateChange(newValue?.toDate() || new Date())}
-//           slotProps={{
-//             textField: {
-//               size: "small",
-//             },
-//           }}
-//         />
-//       )}
-//     </Box>
-//   );
-// };
-
-// export default NewsFilterBar;
-
-// import {
-//   Box,
-//   FormControl,
-//   InputLabel,
-//   MenuItem,
-//   Select,
 //   type SelectChangeEvent,
 // } from "@mui/material";
 
@@ -124,9 +34,7 @@
 
 // export default NewsFilterBar;
 
-
-
-// components/NewsFilterBar.tsx
+// new code
 import {
   Box,
   FormControl,
@@ -136,6 +44,7 @@ import {
   TextField,
   useMediaQuery,
   useTheme,
+  Stack,
   type SelectChangeEvent,
 } from "@mui/material";
 
@@ -143,15 +52,13 @@ interface NewsFilterBarProps {
   storyType: string;
   onStoryTypeChange: (type: string) => void;
   filters: {
-    category: string;
-    section: string;
-    date: string;
+    section?: string;
+    category?: string;
+    date?: string;
+    year?: string;
+    month?: string;
   };
-  onFiltersChange: (filters: {
-    category: string;
-    section: string;
-    date: string;
-  }) => void;
+  onFiltersChange: (filters: any) => void;
 }
 
 const NewsFilterBar = ({
@@ -163,83 +70,82 @@ const NewsFilterBar = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Unified handler for both TextField & Select
   const handleChange = (
-    e: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>
   ) => {
     const { name, value } = e.target;
-    onFiltersChange({
-      ...filters,
-      [name]: value,
-    });
+    onFiltersChange({ ...filters, [name]: value });
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection={isMobile ? "column" : "row"}
-      gap={2}
-      my={3}
+    <Stack
+      direction={isMobile ? "column" : "row"}
+      spacing={2}
       flexWrap="wrap"
+      alignItems="center"
+      my={2}
     >
       {/* Story Type */}
-      <FormControl fullWidth sx={{ minWidth: 150 }}>
+      <FormControl sx={{ minWidth: 150 }} fullWidth={isMobile}>
         <InputLabel>Story Type</InputLabel>
         <Select
+          name="storyType" // ✅ Add name to fix type error
           value={storyType}
           label="Story Type"
           onChange={(e) => onStoryTypeChange(e.target.value)}
         >
-          <MenuItem value="top">Top</MenuItem>
+          <MenuItem value="top">Top Stories</MenuItem>
           <MenuItem value="trending">Trending</MenuItem>
           <MenuItem value="archived">Archived</MenuItem>
         </Select>
       </FormControl>
 
-      {/* Category */}
-      <FormControl fullWidth sx={{ minWidth: 150 }}>
-        <InputLabel>Category</InputLabel>
-        <Select
-          value={filters.category}
-          onChange={handleChange}
-          name="category"
-          label="Category"
-        >
-          <MenuItem value="">All</MenuItem>
-          <MenuItem value="arts">Arts</MenuItem>
-          <MenuItem value="sports">Sports</MenuItem>
-          <MenuItem value="politics">Politics</MenuItem>
-          <MenuItem value="technology">Technology</MenuItem>
-        </Select>
-      </FormControl>
+      {/* Top Stories Section Filter */}
+      {storyType === "top" && (
+        <FormControl sx={{ minWidth: 150 }} fullWidth={isMobile}>
+          <InputLabel>Section</InputLabel>
+          <Select
+            name="section"
+            value={filters.section || ""}
+            label="Section"
+            onChange={handleChange}
+          >
+            <MenuItem value="">Home</MenuItem>
+            <MenuItem value="world">World</MenuItem>
+            <MenuItem value="us">U.S.</MenuItem>
+            <MenuItem value="business">Business</MenuItem>
+            <MenuItem value="health">Health</MenuItem>
+            <MenuItem value="arts">Arts</MenuItem>
+            <MenuItem value="science">Science</MenuItem>
+          </Select>
+        </FormControl>
+      )}
 
-      {/* Section */}
-      <FormControl fullWidth sx={{ minWidth: 150 }}>
-        <InputLabel>Section</InputLabel>
-        <Select
-          value={filters.section}
-          onChange={handleChange}
-          name="section"
-          label="Section"
-        >
-          <MenuItem value="">All</MenuItem>
-          <MenuItem value="world">World</MenuItem>
-          <MenuItem value="us">U.S.</MenuItem>
-          <MenuItem value="business">Business</MenuItem>
-          <MenuItem value="health">Health</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Date */}
-      <TextField
-        label="Published After"
-        type="date"
-        name="date"
-        value={filters.date}
-        onChange={handleChange}
-        InputLabelProps={{ shrink: true }}
-        fullWidth
-      />
-    </Box>
+      {/* Archived Filters */}
+      {storyType === "archived" && (
+        <>
+          <TextField
+            name="year"
+            label="Year"
+            type="number"
+            value={filters.year || ""}
+            onChange={handleChange}
+            fullWidth={isMobile}
+            sx={{ minWidth: 120 }}
+          />
+          <TextField
+            name="month"
+            label="Month"
+            type="number"
+            value={filters.month || ""}
+            onChange={handleChange}
+            fullWidth={isMobile}
+            sx={{ minWidth: 120 }}
+          />
+        </>
+      )}
+    </Stack>
   );
 };
 

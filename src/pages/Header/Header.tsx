@@ -195,10 +195,9 @@ const Header = ({ onLogout, user }: HeaderProps) => {
                   <Logout fontSize="small" sx={{ mr: 1 }} /> Logout
                 </MenuItem>
                 <MenuItem onClick={() => navigate("/history")}>
-  {/* <HistoryIcon fontSize="small" sx={{ mr: 1 }} /> */}
-  View Reading History
-</MenuItem>
-
+                  {/* <HistoryIcon fontSize="small" sx={{ mr: 1 }} /> */}
+                  View Reading History
+                </MenuItem>
               </Menu>
             </>
           )}

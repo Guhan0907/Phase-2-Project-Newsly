@@ -9,21 +9,21 @@ export const CLEAR_HISTORY = "CLEAR_HISTORY";
 // }
 
 export interface AddToHistoryAction {
-    type : typeof ADD_TO_HISTORY;
-    payload: string;
+  type: typeof ADD_TO_HISTORY;
+  payload: string;
 }
 
 export interface ClearHistoryAction {
-    type: typeof CLEAR_HISTORY;
+  type: typeof CLEAR_HISTORY;
 }
 
 // functions
 
-export const addToHistory = (articleId : string): AddToHistoryAction => ({
-    type : ADD_TO_HISTORY,
-    payload: articleId ,
-})
+export const addToHistory = (articleId: string): AddToHistoryAction => ({
+  type: ADD_TO_HISTORY,
+  payload: articleId,
+});
 
 export const clearHistory = (): ClearHistoryAction => ({
-    type: CLEAR_HISTORY,
-})
+  type: CLEAR_HISTORY,
+});

@@ -34,6 +34,15 @@ export const fetchTimesWireNews = async () => {
 };
 
 export const fetchArticleById = async (id: string) => {
-  const res = await fetchTopStories(); 
-  return res.find((article: any) => article.url === id); 
+  const res = await fetchTopStories();
+  return res.find((article: any) => article.url === id);
+};
+
+// for section
+export const fetchTopStoriesBySection = async (section: string) => {
+  const response = await axios.get(
+    `https://api.nytimes.com/svc/topstories/v2/${section}.json`,
+    { params: { "api-key": API_KEY } },
+  );
+  return response.data.results;
 };

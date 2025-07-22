@@ -19,8 +19,6 @@ import {
   addToFavourites,
   removeFromFavourites,
 } from "../../redux/action/favouritesAction";
-
-// recently added
 import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import { useEffect } from "react";
@@ -41,9 +39,9 @@ const ArticleDetail = () => {
   // below useEffect is for the history option
   useEffect(() => {
     if (article.url) {
-      dispatch(addToHistory(article.url))
+      dispatch(addToHistory(article.url));
     }
-  },[article.url])
+  }, [article.url]);
 
   if (!article) {
     return (

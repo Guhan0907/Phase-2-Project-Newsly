@@ -61,7 +61,6 @@
 
 // // export default HistoryPage;
 
-
 // import { useSelector } from "react-redux";
 // import { useEffect, useState } from "react";
 // import type { RootState } from "../../redux/store";
@@ -131,7 +130,6 @@
 // };
 
 // export default HistoryPage;
-
 
 // // import {
 // //   fetchTopStories,

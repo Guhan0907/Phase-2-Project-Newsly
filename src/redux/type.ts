@@ -6,8 +6,8 @@ export interface SearchState {
 
 // History state
 export interface HistoryEntry {
-    articleId: string;
-    source: "top" | "wire" | "trending";
+  articleId: string;
+  source: "top" | "wire" | "trending";
 }
 
 export interface historyState {
