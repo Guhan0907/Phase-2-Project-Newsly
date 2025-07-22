@@ -7,7 +7,7 @@ export interface AddToHistoryAction {
   payload: string; // URL of the article
 }
 
-export const addToHistory = (url: string):AddToHistoryAction => ({
+export const addToHistory = (url: string): AddToHistoryAction => ({
   type: ADD_TO_HISTORY,
   payload: url,
 });

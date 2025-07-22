@@ -28,6 +28,7 @@ import { type AppDispatch, type RootState } from "../../redux/store";
 import { searchArticles } from "../../redux/action/searchAction";
 import { fetchTimesWireNews, fetchTopStories } from "../../services/apiCalls";
 import { useNavigate } from "react-router-dom";
+import SearchBar from "./SearchBar";
 
 interface HeaderProps {
   onLogout: () => void;
@@ -150,6 +151,8 @@ const Header = ({ onLogout, user }: HeaderProps) => {
           </IconButton>
         </Box>
 
+        {/* <SearchBar query={query} onQueryChange={setQueryInput} onSearch={handleSearch} /> */}
+
         <Box
           sx={{
             display: "flex",
@@ -193,10 +196,6 @@ const Header = ({ onLogout, user }: HeaderProps) => {
                   }}
                 >
                   <Logout fontSize="small" sx={{ mr: 1 }} /> Logout
-                </MenuItem>
-                <MenuItem onClick={() => navigate("/history")}>
-                  {/* <HistoryIcon fontSize="small" sx={{ mr: 1 }} /> */}
-                  View Reading History
                 </MenuItem>
               </Menu>
             </>

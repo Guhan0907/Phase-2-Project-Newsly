@@ -12,6 +12,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ErrorBoundary from "./pages/ErrorBoundary/ErrorBoundary";
 import ArticleDetail from "./pages/articlesDetail/articlesDetail";
 import Favourites from "./pages/Favourites/Favourites";
+import AuthPage from "./pages/Login/AuthPage";
 
 const theme = createTheme({
   palette: {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
         path: "/favourites",
         element: <Favourites />,
       },
+      {
+        path: "/auth",
+        element : <AuthPage />
+      }
     ],
   },
   {

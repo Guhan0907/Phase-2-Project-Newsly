@@ -117,9 +117,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchTopStories,
-} from "../../services/apiCalls";
+import { fetchTopStories } from "../../services/apiCalls";
 import {
   fetchArticlesRequest,
   fetchArticlesSuccess,
@@ -138,9 +136,9 @@ const HomePage = () => {
   const { featured, filtered, loading, error } = useSelector(
     (state: RootState) => state.articles,
   );
-  // for the history data 
+  // for the history data
   const readHistory = useSelector((state: RootState) => state.history);
-    const isRead = (articleUrl: string) => {
+  const isRead = (articleUrl: string) => {
     return readHistory.includes(articleUrl);
   };
 
@@ -208,12 +206,10 @@ const HomePage = () => {
   }, [filtered, filters]);
   console.log(filteredArticles, "----- ");
 
-
-      const articlesWithReadStatus = filteredArticles.map((article) => ({
-    ...article,  // Spread original article
-    isRead: isRead(article.url),  // Add `isRead` dynamically
+  const articlesWithReadStatus = filteredArticles.map((article) => ({
+    ...article, // Spread original article
+    isRead: isRead(article.url), // Add `isRead` dynamically
   }));
-
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>

@@ -59,8 +59,6 @@
 
 // export default CompactNewsGrid;
 
-
-
 import {
   Grid,
   Card,
@@ -71,7 +69,6 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import type { NYTArticle } from "../types/article";
-
 
 interface CompactNewsGridProps {
   articles: NYTArticle[];

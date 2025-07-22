@@ -1,9 +1,15 @@
 import type { AnyAction } from "redux";
-import { ADD_TO_HISTORY, type AddToHistoryAction } from "../action/historyActions";
+import {
+  ADD_TO_HISTORY,
+  type AddToHistoryAction,
+} from "../action/historyActions";
 
 const initialState: string[] = [];
 
-const historyReducer = (state = initialState, action: AddToHistoryAction): string[] => {
+const historyReducer = (
+  state = initialState,
+  action: AddToHistoryAction,
+): string[] => {
   switch (action.type) {
     case ADD_TO_HISTORY:
       if (state.includes(action.payload)) return state;

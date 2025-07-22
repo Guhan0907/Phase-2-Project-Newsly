@@ -72,7 +72,7 @@ const NewsFilterBar = ({
 
   // Unified handler for both TextField & Select
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>
+    e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
   ) => {
     const { name, value } = e.target;
     onFiltersChange({ ...filters, [name]: value });
