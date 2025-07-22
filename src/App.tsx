@@ -34,22 +34,10 @@ import Header from "./pages/Header/Header";
 import "./App.css";
 
 const App = () => {
-  const user = {
-    name: "John Doe",
-    avatar: "https://i.pravatar.cc/150?img=8",
-  };
-
-  const handleSearch = (query: string) => {
-    console.log("Search:", query);
-  };
-
-  const handleLogout = () => {
-    console.log("Logout");
-  };
 
   return (
     <>
-      <Header user={user} onSearch={handleSearch} onLogout={handleLogout} />
+      <Header />
       <Outlet />
     </>
   );
