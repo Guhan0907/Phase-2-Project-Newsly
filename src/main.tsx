@@ -7,6 +7,11 @@ import PageNotFound from "./pages/PageNotFound/PageNotFound";
 import HomePage from "./pages/HomePage/HomePage";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import ErrorBoundary from "./pages/ErrorBoundary/ErrorBoundary";
+import ArticleDetail from "./pages/articlesDetail/articlesDetail";
+import Favourites from "./pages/Favourites/Favourites";
 
 const theme = createTheme({
   palette: {
@@ -22,11 +27,19 @@ const theme = createTheme({
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />, 
+    element: <App />,
     children: [
       {
         index: true,
         element: <HomePage />,
+      },
+      {
+        path: "article/:id",
+        element: <ArticleDetail />,
+      },
+      {
+        path: "/favourites",
+        element: <Favourites />,
       },
     ],
   },
@@ -37,9 +50,14 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
-  </Provider>,
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <ErrorBoundary>
+          <RouterProvider router={router} />
+        </ErrorBoundary>
+      </ThemeProvider>
+    </Provider>
+    ,
+  </LocalizationProvider>,
 );

@@ -1,3 +1,4 @@
+import type { Dispatch } from "redux";
 import type { NYTArticle } from "../../types/article";
 
 export const FETCH_ARTICLES_REQUEST = "FETCH_ARTICLES_REQUEST";
@@ -5,6 +6,7 @@ export const FETCH_ARTICLES_SUCCESS = "FETCH_ARTICLES_SUCCESS";
 export const FETCH_ARTICLES_FAILURE = "FETCH_ARTICLES_FAILURE";
 export const FETCH_FEATURED_SUCCESS = "FETCH_FEATURED_SUCCESS";
 export const SET_QUERY = "SET_QUERY";
+export const SET_SEARCH_MODE = "SET_SEARCH_MODE";
 
 // for the typescript
 export interface fetchArticlesRequestAction {
@@ -26,7 +28,12 @@ export interface setQueryAction {
   type: typeof SET_QUERY;
   payload: string;
 }
+export interface setSearchModeAction {
+  type: typeof SET_SEARCH_MODE;
+  payload: boolean;
+}
 
+// data
 export const fetchArticlesRequest = (): fetchArticlesRequestAction => ({
   type: "FETCH_ARTICLES_REQUEST",
 });
@@ -55,10 +62,15 @@ export const setQuery = (query: string): setQueryAction => ({
   payload: query,
 });
 
+export const setSearchMode = (isSearch: boolean): setSearchModeAction => ({
+  type: SET_SEARCH_MODE,
+  payload: isSearch,
+});
 // for the whole export
 export type ArticlesAction =
   | fetchArticlesRequestAction
   | fetchArticlesSuccessAction
   | fetchArticlesFailureAction
   | fetchFeaturedSuccessAction
-  | setQueryAction;
+  | setQueryAction
+  | setSearchModeAction;

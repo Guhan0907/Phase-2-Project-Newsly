@@ -1,65 +1,26 @@
-// import { useEffect, useState } from "react";
-// import { Container, Typography, Divider } from "@mui/material";
-// import FeaturedNewsCard from "../../components/FeaturedNewsCard";
-// import CompactNewsGrid from "../../components/CompactNewsGrid";
-// import { fetchTopStories, fetchTimesWireNews } from "../../services/apiCalls";
-// import type { NYTArticle } from "../../types/article";
-
-// const HomePage = () => {
-//   const [featured, setFeatured] = useState<NYTArticle | null>(null);
-//   const [topStories, setTopStories] = useState<NYTArticle[]>([]);
-
-//   useEffect(() => {
-//     const loadNews = async () => {
-//       const timesWireData = await fetchTimesWireNews();
-//       const topStoriesData = await fetchTopStories();
-
-//       if (timesWireData.length) {
-//         setFeatured(timesWireData[0]);
-//       }
-//       setTopStories(topStoriesData.slice(0, 9));
-//     };
-//     loadNews();
-//   }, []);
-
-//   return (
-//     <Container maxWidth="lg" sx={{ py: 3 }}>
-//       {featured && (
-//         <>
-//           <FeaturedNewsCard article={featured} />
-//           <Divider sx={{ my: 4 }} />
-//         </>
-//       )}
-//       <Typography variant="h6" gutterBottom>
-//         Top Stories
-//       </Typography>
-
-//       {/* below is for the top stories */}
-//       <CompactNewsGrid articles={topStories} />
-//     </Container>
-//   );
-// };
-
-// export default HomePage;
-
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 import {
   Container,
   Typography,
-  Divider,
   CircularProgress,
+  Divider,
 } from "@mui/material";
-import FeaturedNewsCard from "../../components/FeaturedNewsCard";
-import CompactNewsGrid from "../../components/CompactNewsGrid";
-import { fetchTopStories, fetchTimesWireNews } from "../../services/apiCalls";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchTopStories,
+  fetchTrendingStories,
+  fetchArchivedStories,
+} from "../../services/apiCalls";
 import {
   fetchArticlesRequest,
-  fetchArticlesFailure,
   fetchArticlesSuccess,
+  fetchArticlesFailure,
   fetchFeaturedSuccess,
 } from "../../redux/action/articlesAction";
 import { type AppDispatch, type RootState } from "../../redux/store";
+import FeaturedNewsCard from "../../components/FeaturedNewsCard";
+import CompactNewsGrid from "../../components/CompactNewsGrid";
+import NewsFilterBar from "../../components/NewsFilterBar";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -67,42 +28,80 @@ const HomePage = () => {
     (state: RootState) => state.articles,
   );
 
+  const [storyType, setStoryType] = useState("top");
+  const [initialLoaded, setInitialLoaded] = useState(false);
+
   useEffect(() => {
-    const loadNews = async () => {
+    const loadInitialTopStories = async () => {
       try {
         dispatch(fetchArticlesRequest());
-
-        const [topStoriesData, timesWireData] = await Promise.all([
-          fetchTopStories(),
-          fetchTimesWireNews(),
-        ]);
-
-        dispatch(fetchArticlesSuccess(topStoriesData));
-        dispatch(fetchFeaturedSuccess(timesWireData[0]));
-      } catch (err) {
-        dispatch(fetchArticlesFailure("Failed to load articles."));
+        const topStories = await fetchTopStories();
+        dispatch(fetchFeaturedSuccess(topStories[0]));
+        dispatch(fetchArticlesSuccess(topStories)); // Use full list initially
+        setInitialLoaded(true);
+      } catch {
+        dispatch(fetchArticlesFailure("Failed to load Top Stories"));
       }
     };
 
-    loadNews();
+    loadInitialTopStories();
   }, [dispatch]);
 
-  if (loading) return <CircularProgress sx={{ mt: 4 }} />;
-  if (error) return <Typography color="error">{error}</Typography>;
+  useEffect(() => {
+    // if (!initialLoaded || storyType === "top") return;
+
+    const loadOtherStories = async () => {
+      try {
+        dispatch(fetchArticlesRequest());
+        let data = [];
+
+        if (storyType === "trending") {
+          data = await fetchTrendingStories();
+        } else if (storyType === "top") {
+          data = await fetchTopStories();
+        } else if (storyType === "archived") {
+          const year = 2024;
+          const month = 7;
+          data = await fetchArchivedStories(year, month);
+        }
+
+        dispatch(fetchArticlesSuccess(data));
+      } catch {
+        dispatch(fetchArticlesFailure("Failed to load stories"));
+      }
+    };
+
+    loadOtherStories();
+  }, [dispatch, storyType, initialLoaded]);
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
-      {featured && (
+      {loading && <CircularProgress sx={{ mt: 4 }} />}
+      {error && <Typography color="error">{error}</Typography>}
+
+      <NewsFilterBar storyType={storyType} onStoryTypeChange={setStoryType} />
+
+      {!loading && !error && featured && (
         <>
-          <FeaturedNewsCard article={featured} />
+          <FeaturedNewsCard article={featured} index={0} />
           <Divider sx={{ my: 4 }} />
         </>
       )}
 
+      {/* <NewsFilterBar
+        storyType={storyType}
+        onStoryTypeChange={setStoryType}
+      /> */}
+
       <Typography variant="h6" gutterBottom>
-        Top Stories
+        {storyType === "top"
+          ? "Top Stories"
+          : storyType === "trending"
+            ? "Trending Stories"
+            : "Archived Stories (July 2024)"}
       </Typography>
-      <CompactNewsGrid articles={filtered} />
+
+      <CompactNewsGrid articles={filtered ?? []} />
     </Container>
   );
 };

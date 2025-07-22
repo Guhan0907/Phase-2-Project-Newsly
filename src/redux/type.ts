@@ -11,6 +11,7 @@ export interface ArticlesState {
   query: string;
   loading: boolean;
   error: string | null;
+  isSearchMode: boolean;
 }
 
 // export interface RootState {

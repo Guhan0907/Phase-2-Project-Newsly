@@ -49,8 +49,8 @@
 
 // export default articlesReducer;
 
-import type { ArticlesAction } from "../action/articlesAction";
-import type { ArticlesState } from "../type";
+// import type { ArticlesAction } from "../action/articlesAction";
+// import type { ArticlesState } from "../type";
 
 // const initialState: ArticlesState = {
 //   featured: null,
@@ -105,6 +105,8 @@ import type { ArticlesState } from "../type";
 
 // export default articlesReducer;
 
+import type { ArticlesAction } from "../action/articlesAction";
+import type { ArticlesState } from "../type";
 const initialState: ArticlesState = {
   featured: null,
   topStories: [],
@@ -112,6 +114,7 @@ const initialState: ArticlesState = {
   query: "",
   loading: false,
   error: null,
+  isSearchMode: false,
 };
 
 const articlesReducer = (
@@ -148,6 +151,12 @@ const articlesReducer = (
         ...state,
         query,
         filtered,
+      };
+
+    case "SET_SEARCH_MODE":
+      return {
+        ...state,
+        isSearchMode: action.payload,
       };
 
     default:
