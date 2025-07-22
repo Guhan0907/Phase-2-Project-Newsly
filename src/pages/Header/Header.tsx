@@ -294,7 +294,6 @@ const Header = () => {
   
   const handleLogout = () => {
   dispatch(logoutUser());
-  // localStorage.removeItem("persist:root");
   navigate("/auth");
 };
 

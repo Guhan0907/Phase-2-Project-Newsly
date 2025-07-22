@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -10,8 +10,10 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import GoogleSignIn from "./GoogleSignIn";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../redux/action/userAction";
+import { useNavigate } from "react-router-dom";
+import type { RootState } from "../../redux/store";
 
 const fallbackImage = "/assets/default-user.png";
 
@@ -19,6 +21,18 @@ const AuthPage = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+
+  // for not re-accessing
+   const navigate = useNavigate();
+  const rawUser = useSelector((state: RootState) => state.user?.user);
+  const parsedUser = typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
+
+  useEffect(() => {
+    if (parsedUser?.email) {
+      navigate("/"); // or another page
+    }
+  }, [parsedUser]);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

@@ -13,6 +13,7 @@ import ErrorBoundary from "./pages/ErrorBoundary/ErrorBoundary";
 import ArticleDetail from "./pages/articlesDetail/articlesDetail";
 import Favourites from "./pages/Favourites/Favourites";
 import AuthPage from "./pages/Login/AuthPage";
+import ProtectedRoutes from "./pages/ProtectedRoutes/ProtectedRoutes";
 
 const theme = createTheme({
   palette: {
@@ -25,6 +26,36 @@ const theme = createTheme({
   },
 });
 
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <App />,
+//     children: [
+//       {
+//         index: true,
+//         element: <HomePage />,
+//       },
+//       {
+//         path: "article/:id",
+//         element: <ArticleDetail />,
+//       },
+//       {
+//         path: "/favourites",
+//         element: <Favourites />,
+//       },
+//       {
+//         path: "/auth",
+//         element : <AuthPage />
+//       }
+//     ],
+//   },
+//   {
+//     path: "*",
+//     element: <PageNotFound />,
+//   },
+// ]);
+
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -32,20 +63,28 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <HomePage />, // Public
       },
       {
         path: "article/:id",
-        element: <ArticleDetail />,
+        element: (
+          <ProtectedRoutes>
+            <ArticleDetail />
+          </ProtectedRoutes>
+        ),
       },
       {
-        path: "/favourites",
-        element: <Favourites />,
+        path: "favourites",
+        element: (
+          <ProtectedRoutes>
+            <Favourites />
+          </ProtectedRoutes>
+        ),
       },
       {
-        path: "/auth",
-        element : <AuthPage />
-      }
+        path: "auth",
+        element: <AuthPage />, // Public login page
+      },
     ],
   },
   {
