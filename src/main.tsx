@@ -94,6 +94,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </ErrorBoundary>
       </ThemeProvider>
     </Provider>
-    ,
   </LocalizationProvider>,
 );

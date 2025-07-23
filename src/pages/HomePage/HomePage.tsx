@@ -1,121 +1,15 @@
-// import { useEffect, useState } from "react";
-// import {
-//   Container,
-//   Typography,
-//   CircularProgress,
-//   Divider,
-// } from "@mui/material";
-// import { useDispatch, useSelector } from "react-redux";
-// import {
-//   fetchTopStories,
-//   fetchTrendingStories,
-//   fetchArchivedStories,
-//   fetchTopStoriesBySection,
-// } from "../../services/apiCalls";
-// import {
-//   fetchArticlesRequest,
-//   fetchArticlesSuccess,
-//   fetchArticlesFailure,
-//   fetchFeaturedSuccess,
-// } from "../../redux/action/articlesAction";
-// import { type AppDispatch, type RootState } from "../../redux/store";
-// import FeaturedNewsCard from "../../components/FeaturedNewsCard";
-// import CompactNewsGrid from "../../components/CompactNewsGrid";
-// import NewsFilterBar from "../../components/NewsFilterBar";
-
-// const HomePage = () => {
-//   const dispatch = useDispatch<AppDispatch>();
-//   const { featured, filtered, loading, error } = useSelector(
-//     (state: RootState) => state.articles,
-//   );
-
-//   const [storyType, setStoryType] = useState("top");
-//   const [initialLoaded, setInitialLoaded] = useState(false);
-
-//   useEffect(() => {
-//     const loadInitialTopStories = async () => {
-//       try {
-//         dispatch(fetchArticlesRequest());
-//         const topStories = await fetchTopStories();
-//         dispatch(fetchFeaturedSuccess(topStories[0]));
-//         dispatch(fetchArticlesSuccess(topStories)); // Use full list initially
-//         setInitialLoaded(true);
-//       } catch {
-//         dispatch(fetchArticlesFailure("Failed to load Top Stories"));
-//       }
-//     };
-
-//     loadInitialTopStories();
-//   }, [dispatch]);
-
-//   useEffect(() => {
-//     // if (!initialLoaded || storyType === "top") return;
-
-//     const loadOtherStories = async () => {
-//       try {
-//         dispatch(fetchArticlesRequest());
-//         let data = [];
-
-//         if (storyType === "trending") {
-//           data = await fetchTrendingStories();
-//         } else if (storyType === "top") {
-//           data = await fetchTopStories();
-//         } else if (storyType === "archived") {
-//           const year = 2024;
-//           const month = 7;
-//           data = await fetchArchivedStories(year, month);
-//         }
-
-//         dispatch(fetchArticlesSuccess(data));
-//       } catch {
-//         dispatch(fetchArticlesFailure("Failed to load stories"));
-//       }
-//     };
-
-//     loadOtherStories();
-//   }, [dispatch, storyType, initialLoaded]);
-
-//   return (
-//     <Container maxWidth="lg" sx={{ py: 3 }}>
-//       {loading && <CircularProgress sx={{ mt: 4 }} />}
-//       {error && <Typography color="error">{error}</Typography>}
-
-//       <NewsFilterBar storyType={storyType} onStoryTypeChange={setStoryType} />
-
-//       {!loading && !error && featured && (
-//         <>
-//           <FeaturedNewsCard article={featured} index={0} />
-//           <Divider sx={{ my: 4 }} />
-//         </>
-//       )}
-
-//       {/* <NewsFilterBar
-//         storyType={storyType}
-//         onStoryTypeChange={setStoryType}
-//       /> */}
-
-//       <Typography variant="h6" gutterBottom>
-//         {storyType === "top"
-//           ? "Top Stories"
-//           : storyType === "trending"
-//             ? "Trending Stories"
-//             : "Archived Stories (July 2024)"}
-//       </Typography>
-
-//       <CompactNewsGrid articles={filtered ?? []} />
-//     </Container>
-//   );
-// };
-
-// export default HomePage;
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   Container,
   Typography,
-  CircularProgress,
   Divider,
+  Fab,
+  Zoom,
+  Box,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
+import { KeyboardArrowUp as ArrowUpwardIcon } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTopStories, fetchTrendingStories } from "../../services/apiCalls";
 import {
@@ -128,8 +22,6 @@ import { type AppDispatch, type RootState } from "../../redux/store";
 import FeaturedNewsCard from "../../components/FeaturedNewsCard";
 import CompactNewsGrid from "../../components/CompactNewsGrid";
 import NewsFilterBar from "../../components/NewsFilterBar";
-import { useMemo } from "react";
-import type { NYTArticle } from "../../types/article";
 import CompactNewsGridShimmer from "../Shimmer/CompactNewsGridShimmer";
 import FeaturedNewsCardShimmer from "../Shimmer/FeaturedNewsCardShimmer";
 
@@ -138,15 +30,14 @@ const HomePage = () => {
   const { featured, filtered, loading, error } = useSelector(
     (state: RootState) => state.articles,
   );
-  // for the history data
+
   const readHistory = useSelector((state: RootState) => state.history);
-  const isRead = (articleUrl: string) => {
-    return readHistory.includes(articleUrl);
-  };
+  const isRead = (articleUrl: string) => readHistory.includes(articleUrl);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [storyType, setStoryType] = useState("top");
-  const [initialLoaded, setInitialLoaded] = useState(false);
-
   const [filters, setFilters] = useState({
     category: "",
     section: "",
@@ -155,21 +46,8 @@ const HomePage = () => {
     month: (new Date().getMonth() + 1).toString(),
   });
 
-  // useEffect(() => {
-  //   const loadInitialTopStories = async () => {
-  //     try {
-  //       dispatch(fetchArticlesRequest());
-  //       const topStories = await fetchTopStories();
-  //       dispatch(fetchFeaturedSuccess(topStories[0]));
-  //       dispatch(fetchArticlesSuccess(topStories));
-  //       setInitialLoaded(true);
-  //     } catch {
-  //       dispatch(fetchArticlesFailure("Failed to load Top Stories"));
-  //     }
-  //   };
-
-  //   loadInitialTopStories();
-  // }, [dispatch]);
+  const [page, setPage] = useState(1); // For infinite scroll
+  const [showScroll, setShowScroll] = useState(false); // For Scroll to Top button
 
   useEffect(() => {
     const loadArticlesByType = async () => {
@@ -182,10 +60,11 @@ const HomePage = () => {
           dispatch(fetchArticlesSuccess(topStories));
         } else if (storyType === "trending") {
           const trendingStories = await fetchTrendingStories();
-          dispatch(fetchArticlesSuccess(trendingStories));
           dispatch(fetchFeaturedSuccess(trendingStories[0]));
+          dispatch(fetchArticlesSuccess(trendingStories));
         }
-        setInitialLoaded(true);
+
+        setPage(1);
       } catch (error) {
         dispatch(fetchArticlesFailure("Failed to load articles"));
       }
@@ -196,12 +75,7 @@ const HomePage = () => {
 
   useEffect(() => {
     if (storyType === "trending") {
-      setFilters((prev) => ({
-        ...prev,
-        section: "",
-        year: "",
-        month: "",
-      }));
+      setFilters((prev) => ({ ...prev, section: "", year: "", month: "" }));
     } else if (storyType === "archived") {
       setFilters((prev) => ({
         ...prev,
@@ -210,15 +84,11 @@ const HomePage = () => {
         month: prev.month || (new Date().getMonth() + 1).toString(),
       }));
     } else if (storyType === "top") {
-      setFilters((prev) => ({
-        ...prev,
-        year: "",
-        month: "",
-      }));
+      setFilters((prev) => ({ ...prev, year: "", month: "" }));
     }
   }, [storyType]);
 
-  // Client-side filtering logic
+  // Filter + add read status
   const filteredArticles = useMemo(() => {
     return (filtered ?? []).filter((article) => {
       const matchesSection = filters.section
@@ -229,27 +99,46 @@ const HomePage = () => {
       return matchesSection;
     });
   }, [filtered, filters]);
-  console.log(filteredArticles, "----- ");
 
   const articlesWithReadStatus = filteredArticles.map((article) => ({
-    ...article, // Spread original article
-    isRead: isRead(article.url), // Add `isRead` dynamically
+    ...article,
+    isRead: isRead(article.url),
   }));
+
+  // Simulate infinite scroll
+  const visibleArticles = useMemo(() => {
+    return articlesWithReadStatus.slice(0, page * 10); // 10 items per scroll
+  }, [articlesWithReadStatus, page]);
+
+  // Scroll listener
+  useEffect(() => {
+    const handleScroll = () => {
+      const bottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+      const atTop = window.scrollY > 300;
+
+      if (bottom && page * 10 < articlesWithReadStatus.length) {
+        setPage((prev) => prev + 1);
+      }
+
+      setShowScroll(atTop);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [page, articlesWithReadStatus.length]);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
-      {/* {loading && <CircularProgress sx={{ mt: 4 }} />} */}
       {error && <Typography color="error">{error}</Typography>}
 
-      {/* <NewsFilterBar
-        storyType={storyType}
-        onStoryTypeChange={setStoryType}
-        filters={filters}
-        onFiltersChange={setFilters}
-      /> */}
       {loading && !featured && <FeaturedNewsCardShimmer />}
 
-      {!loading && !error && featured && (
+      {!loading && featured && (
         <>
           <FeaturedNewsCard article={featured} index={0} />
           <Divider sx={{ my: 4 }} />
@@ -267,16 +156,34 @@ const HomePage = () => {
         {storyType === "top"
           ? "Top Stories"
           : storyType === "trending"
-            ? "Trending Stories"
-            : "Archived Stories (July 2024)"}
+          ? "Trending Stories"
+          : "Archived Stories (July 2024)"}
       </Typography>
+
       {loading ? (
         <CompactNewsGridShimmer />
       ) : (
-        <CompactNewsGrid articles={articlesWithReadStatus} />
+        <CompactNewsGrid articles={visibleArticles} />
       )}
 
-      {/* <CompactNewsGrid articles={articlesWithReadStatus} /> */}
+      {/* Scroll to Top Button */}
+      <Zoom in={showScroll}>
+        <Box
+          onClick={scrollToTop}
+          role="presentation"
+          sx={{
+            position: "fixed",
+            bottom: 30,
+            right: 30,
+            zIndex: 2000,
+            cursor: "pointer",
+          }}
+        >
+          <Fab color="primary" size={isMobile ? "small" : "medium"}>
+            <ArrowUpwardIcon />
+          </Fab>
+        </Box>
+      </Zoom>
     </Container>
   );
 };

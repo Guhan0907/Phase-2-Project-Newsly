@@ -8,8 +8,6 @@ import {
   useTheme,
   Chip,
 } from "@mui/material";
-import ShareIcon from "@mui/icons-material/Share";
-import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { NYTArticle } from "../../types/article";
@@ -19,10 +17,11 @@ import {
   addToFavourites,
   removeFromFavourites,
 } from "../../redux/action/favouritesAction";
-import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
-import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
-import { useEffect } from "react";
 import { addToHistory } from "../../redux/action/historyActions";
+import ArticleDetailAction from "./ArticleDetailAction";
+import ArticleDetailHeading from "./ArticleDetailHeading";
+import { useReadObserver } from "../../hooks/readObserverHook";
+import { useEffect } from "react";
 
 const ArticleDetail = () => {
   const { state } = useLocation();
@@ -36,10 +35,11 @@ const ArticleDetail = () => {
   const favourites = useSelector((state: RootState) => state.favourites);
   const isSaved = favourites.includes(article.url);
 
-  // below useEffect is for the history option
+  // to scroll to the top 
   useEffect(() => {
-    dispatch(addToHistory(article.url));
-  }, [article.url]);
+  window.scrollTo({ top: 0, behavior: "instant" }); // or "smooth"
+}, []);
+
 
   if (!article) {
     return (
@@ -62,22 +62,12 @@ const ArticleDetail = () => {
     article.multimedia?.find((m) => m.format === "superJumbo") ??
     article.multimedia?.[0];
 
-  const publicationDate = new Date(article.published_date).toLocaleDateString(
-    "en-US",
-    {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    },
-  );
-
-  const publicationTime = new Date(article.published_date).toLocaleTimeString(
-    "en-US",
-    {
-      hour: "2-digit",
-      minute: "2-digit",
-    },
-  );
+    // for maintaining the reading history of the Article
+  const readObserver = useReadObserver(() => {
+    dispatch(addToHistory(article.url));
+    console.log("History stored ======");
+    
+  })
 
   const handleShare = async () => {
     try {
@@ -114,34 +104,7 @@ const ArticleDetail = () => {
         lineHeight: 1.75,
       }}
     >
-      <Typography
-        variant={isMobile ? "h5" : "h3"}
-        fontWeight="bold"
-        gutterBottom
-      >
-        {article.title}
-      </Typography>
-
-      {article.byline && (
-        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          {article.byline}
-        </Typography>
-      )}
-
-      <Typography variant="body2" color="text.secondary" gutterBottom>
-        {publicationDate} • {publicationTime}
-      </Typography>
-
-      {(article.section || article.subsection) && (
-        <Stack direction="row" spacing={1} mt={1} mb={2} flexWrap="wrap">
-          {article.section && <Chip label={article.section} color="primary" />}
-          {article.subsection && (
-            <Chip label={article.subsection} color="secondary" />
-          )}
-        </Stack>
-      )}
-
-      <Divider sx={{ my: 2 }} />
+      <ArticleDetailHeading article={article} />
 
       {mainImage && (
         <Box
@@ -186,29 +149,13 @@ const ArticleDetail = () => {
         </>
       )}
 
-      <Stack direction="row" spacing={2} my={3}>
-        <Button
-          variant="outlined"
-          startIcon={<ShareIcon />}
-          onClick={handleShare}
-        >
-          Share
-        </Button>
-        {/* <Button variant="contained" startIcon={<BookmarkAddIcon />} onClick={handleSave}>
-          Save
-        </Button> */}
-        <Button
-          variant={isSaved ? "contained" : "outlined"}
-          color={isSaved ? "success" : "primary"}
-          startIcon={
-            isSaved ? <BookmarkAddedIcon /> : <BookmarkAddOutlinedIcon />
-          }
-          onClick={handleSave}
-        >
-          {isSaved ? "Saved" : "Save"}
-        </Button>
-      </Stack>
-
+      <Box ref = {readObserver} >
+         <ArticleDetailAction
+        isSaved={isSaved}
+        onSave={handleSave}
+        onShare={handleShare}
+      />
+      </Box>
       <Divider sx={{ my: 3 }} />
     </Box>
   );
