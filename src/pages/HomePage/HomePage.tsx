@@ -117,7 +117,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTopStories } from "../../services/apiCalls";
+import { fetchTopStories, fetchTrendingStories } from "../../services/apiCalls";
 import {
   fetchArticlesRequest,
   fetchArticlesSuccess,
@@ -153,22 +153,58 @@ const HomePage = () => {
     month: (new Date().getMonth() + 1).toString(),
   });
 
-  useEffect(() => {
-    const loadInitialTopStories = async () => {
-      try {
-        dispatch(fetchArticlesRequest());
-        const topStories = await fetchTopStories();
+  // useEffect(() => {
+  //   const loadInitialTopStories = async () => {
+  //     try {
+  //       dispatch(fetchArticlesRequest());
+  //       const topStories = await fetchTopStories();
+  //       dispatch(fetchFeaturedSuccess(topStories[0]));
+  //       dispatch(fetchArticlesSuccess(topStories));
+  //       setInitialLoaded(true);
+  //     } catch {
+  //       dispatch(fetchArticlesFailure("Failed to load Top Stories"));
+  //     }
+  //   };
+
+  //   loadInitialTopStories();
+  // }, [dispatch]);
+
+
+
+useEffect(() => {
+  const loadArticlesByType = async () => {
+    try {
+      dispatch(fetchArticlesRequest());
+
+      if (storyType === "top") {
+        const topStories = await fetchTopStories(filters.section || "home");
         dispatch(fetchFeaturedSuccess(topStories[0]));
         dispatch(fetchArticlesSuccess(topStories));
-        setInitialLoaded(true);
-      } catch {
-        dispatch(fetchArticlesFailure("Failed to load Top Stories"));
-      }
-    };
+      } else if (storyType === "trending") {
+        const trendingStories = await fetchTrendingStories();
+        dispatch(fetchArticlesSuccess(trendingStories));
+        dispatch(fetchFeaturedSuccess(trendingStories[0]));
+      } 
+      // else if (storyType === "archived") {
+      //   const archivedStories = await fetchArchivedStories(
+      //     Number(filters.year),
+      //     Number(filters.month),
+      //   );
+      //   dispatch(fetchArticlesSuccess(archivedStories));
+      //   dispatch(fetchFeaturedSuccess(archivedStories[0]));
+      // }
 
-    loadInitialTopStories();
-  }, [dispatch]);
+      setInitialLoaded(true);
+    } catch (error) {
+      dispatch(fetchArticlesFailure("Failed to load articles"));
+    }
+  };
 
+  loadArticlesByType();
+}, [storyType, filters.section, filters.year, filters.month, dispatch]);
+
+
+  
   useEffect(() => {
     if (storyType === "trending") {
       setFilters((prev) => ({
@@ -216,12 +252,12 @@ const HomePage = () => {
       {loading && <CircularProgress sx={{ mt: 4 }} />}
       {error && <Typography color="error">{error}</Typography>}
 
-      <NewsFilterBar
+      {/* <NewsFilterBar
         storyType={storyType}
         onStoryTypeChange={setStoryType}
         filters={filters}
         onFiltersChange={setFilters}
-      />
+      /> */}
 
       {!loading && !error && featured && (
         <>
@@ -229,6 +265,13 @@ const HomePage = () => {
           <Divider sx={{ my: 4 }} />
         </>
       )}
+
+       <NewsFilterBar
+        storyType={storyType}
+        onStoryTypeChange={setStoryType}
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
 
       <Typography variant="h6" gutterBottom>
         {storyType === "top"

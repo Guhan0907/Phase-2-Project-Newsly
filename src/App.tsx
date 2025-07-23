@@ -1,34 +1,5 @@
-// import { Outlet } from 'react-router-dom';
-// import Header from './pages/Header/Header';
-// // import Header from './components/Header';
-
-// const App = () => {
-//   const isLoggedIn = true; // Replace with Redux state or auth check
-//   const user = isLoggedIn
-//     ? { name: 'Jane Doe', avatar: 'https://i.pravatar.cc/150?img=3' }
-//     : null;
-
-//   const handleSearch = (query: string) => {
-//     console.log('Search:', query);
-//     // TODO: Trigger search logic or Redux dispatch
-//   };
-
-//   const handleLogout = () => {
-//     console.log('User logged out');
-//     // TODO: Clear auth from Redux
-//   };
-
-//   return (
-//     <>
-//       <Header user={user} onSearch={handleSearch} onLogout={handleLogout} />
-//       <Outlet />
-//     </>
-//   );
-// };
-
-// export default App;
-
-// src/App.tsx
+// import '@fontsource/playfair-display/700.css'; // For Headlines
+// import '@fontsource/roboto/400.css'; // For Body Text
 import { Outlet } from "react-router-dom";
 import Header from "./pages/Header/Header";
 import "./App.css";

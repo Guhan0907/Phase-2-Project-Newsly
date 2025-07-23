@@ -261,6 +261,7 @@ const Header = () => {
 
   const rawUser = useSelector((state: RootState) => state.user.user); // Or from localStorage
   const parsedUser = typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
+  const isLogged = Boolean(rawUser?. email)
 
 
   const handleSearch = () => {
@@ -335,7 +336,7 @@ const Header = () => {
         </Box>
 
 
-        <SearchBar query={query} onQueryChange={setQueryInput} onSearch={handleSearch} />
+        {isLogged && <SearchBar query={query} onQueryChange={setQueryInput} onSearch={handleSearch} />}
 
         <Box
           sx={{

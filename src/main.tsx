@@ -24,36 +24,29 @@ const theme = createTheme({
       main: "#a8a432",
     },
   },
+  // typography: {
+  //   fontFamily: 'Roboto, sans-serif',
+  //   h1: {
+  //     fontFamily: 'Playfair Display, serif',
+  //     fontWeight: 700,
+  //   },
+  //   h2: {
+  //     fontFamily: 'Playfair Display, serif',
+  //     fontWeight: 700,
+  //   },
+  //   h3: {
+  //     fontFamily: 'Playfair Display, serif',
+  //     fontWeight: 700,
+  //   },
+  //   body1: {
+  //     fontFamily: 'Roboto, sans-serif',
+  //     fontWeight: 400,
+  //   },
+  //   body2: {
+  //     fontFamily: 'Roboto, sans-serif',
+  //   },
+  // },
 });
-
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <App />,
-//     children: [
-//       {
-//         index: true,
-//         element: <HomePage />,
-//       },
-//       {
-//         path: "article/:id",
-//         element: <ArticleDetail />,
-//       },
-//       {
-//         path: "/favourites",
-//         element: <Favourites />,
-//       },
-//       {
-//         path: "/auth",
-//         element : <AuthPage />
-//       }
-//     ],
-//   },
-//   {
-//     path: "*",
-//     element: <PageNotFound />,
-//   },
-// ]);
 
 
 const router = createBrowserRouter([

@@ -109,12 +109,13 @@ const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
                   label="Read"
                   size="small"
                   sx={{
+                    //  fontFamily: `'Roboto', sans-serif`,
                     position: "absolute",
                     top: 8,
                     right: 8,
                     backgroundColor: "#FFE0B2", // light orange
                     color: "#E65100", // deeper orange text
-                    fontWeight: 500,
+                    fontWeight: 900,
                   }}
                 />
               )}
@@ -124,6 +125,7 @@ const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
                 noWrap
                 gutterBottom
                 sx={{
+                  // fontFamily: `'Playfair Display', serif`,
                   color: article.isRead ? "#FF9800" : "text.primary",
                   fontStyle: article.isRead ? "italic" : "normal",
                   fontWeight: article.isRead ? 500 : "bold",
@@ -137,6 +139,7 @@ const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
                 color="text.secondary"
                 noWrap
                 sx={{
+                  // fontFamily: `'Roboto', sans-serif`,
                   fontStyle: article.isRead ? "italic" : "normal",
                 }}
               >
