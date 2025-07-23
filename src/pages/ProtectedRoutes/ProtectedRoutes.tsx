@@ -10,7 +10,8 @@ interface ProtectedRoutesProps {
 
 const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
   const rawUser = useSelector((state: RootState) => state.user?.user);
-  const parsedUser = typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
+  const parsedUser =
+    typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
 
   // Check if user exists
   if (!parsedUser || !parsedUser.email) {

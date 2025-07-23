@@ -90,7 +90,7 @@ const NewsFilterBar = ({
       <FormControl sx={{ minWidth: 150 }} fullWidth={isMobile}>
         <InputLabel>Story Type</InputLabel>
         <Select
-          name="storyType" 
+          name="storyType"
           value={storyType}
           label="Story Type"
           onChange={(e) => onStoryTypeChange(e.target.value)}

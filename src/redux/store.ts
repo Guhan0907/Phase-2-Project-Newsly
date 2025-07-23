@@ -19,14 +19,14 @@ export const rootReducer = combineReducers({
   articles: articlesReducer,
   favourites: favouritesReducer,
   history: historyReducer,
-  user: userReducer
+  user: userReducer,
 });
 
 // persist config
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user","favourites", "history"],
+  whitelist: ["user", "favourites", "history"],
 };
 
 // persisted reducer

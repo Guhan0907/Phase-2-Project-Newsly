@@ -50,7 +50,6 @@ const SearchBar = ({ query, onQueryChange, onSearch }: SearchBarProps) => {
 
 export default SearchBar;
 
-
 // import {
 //   InputBase,
 //   IconButton,

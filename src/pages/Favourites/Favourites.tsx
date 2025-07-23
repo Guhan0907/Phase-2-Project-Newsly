@@ -17,6 +17,7 @@ import type { NYTArticle } from "../../types/article";
 import { fetchArticleById } from "../../services/apiCalls";
 import { removeFromFavourites } from "../../redux/action/favouritesAction";
 import AllItemsCard from "../../components/AllItemCard";
+import AllItemsCardShimmer from "../Shimmer/AllItemCardShimmer";
 
 const Favourites = () => {
   const favorites = useSelector((state: RootState) => state.favourites);
@@ -53,11 +54,29 @@ const Favourites = () => {
     }
   }, [favorites]);
 
+  // if (loading) {
+  //   return (
+  //     <Box textAlign="center" mt={5}>
+  //       <CircularProgress />
+  //       <Typography mt={2}>Loading saved articles...</Typography>
+  //     </Box>
+  //   );
+  // }
+
   if (loading) {
     return (
-      <Box textAlign="center" mt={5}>
-        <CircularProgress />
-        <Typography mt={2}>Loading saved articles...</Typography>
+      <Box px={{ xs: 2, sm: 4 }} py={4}>
+        <Typography variant="h4" fontWeight={700} gutterBottom>
+          Saved Articles
+        </Typography>
+
+        <Grid container spacing={3}>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <AllItemsCardShimmer />
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     );
   }
@@ -85,7 +104,7 @@ const Favourites = () => {
 
           return (
             <Grid item xs={12} sm={6} md={4} key={article.url}>
-              <Card
+              {/* <Card
                 elevation={3}
                 sx={{
                   height: "100%",
@@ -152,12 +171,12 @@ const Favourites = () => {
                     </Tooltip>
                   </Box>
                 </CardContent>
-              </Card>
-              {/* <AllItemsCard
+              </Card> */}
+              <AllItemsCard
                 article={article}
                 showFavoriteButton
                 onFavoriteClick={(id) => dispatch(removeFromFavourites(id))}
-              /> */}
+              />
             </Grid>
           );
         })}

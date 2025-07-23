@@ -33,7 +33,7 @@ const GoogleSignIn = () => {
             theme: "outline",
             size: "large",
             width: "100%",
-          }
+          },
         );
       }
     };
@@ -60,13 +60,15 @@ const GoogleSignIn = () => {
       atob(base64)
         .split("")
         .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
+        .join(""),
     );
 
     return JSON.parse(jsonPayload);
   };
 
-  return <div id="google-signin" style={{ width: "100%", textAlign: "center" }} />;
+  return (
+    <div id="google-signin" style={{ width: "100%", textAlign: "center" }} />
+  );
 };
 
 export default GoogleSignIn;

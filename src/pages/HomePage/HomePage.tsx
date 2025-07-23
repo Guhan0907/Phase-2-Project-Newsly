@@ -130,6 +130,8 @@ import CompactNewsGrid from "../../components/CompactNewsGrid";
 import NewsFilterBar from "../../components/NewsFilterBar";
 import { useMemo } from "react";
 import type { NYTArticle } from "../../types/article";
+import CompactNewsGridShimmer from "../Shimmer/CompactNewsGridShimmer";
+import FeaturedNewsCardShimmer from "../Shimmer/FeaturedNewsCardShimmer";
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -169,42 +171,29 @@ const HomePage = () => {
   //   loadInitialTopStories();
   // }, [dispatch]);
 
+  useEffect(() => {
+    const loadArticlesByType = async () => {
+      try {
+        dispatch(fetchArticlesRequest());
 
+        if (storyType === "top") {
+          const topStories = await fetchTopStories(filters.section || "home");
+          dispatch(fetchFeaturedSuccess(topStories[0]));
+          dispatch(fetchArticlesSuccess(topStories));
+        } else if (storyType === "trending") {
+          const trendingStories = await fetchTrendingStories();
+          dispatch(fetchArticlesSuccess(trendingStories));
+          dispatch(fetchFeaturedSuccess(trendingStories[0]));
+        }
+        setInitialLoaded(true);
+      } catch (error) {
+        dispatch(fetchArticlesFailure("Failed to load articles"));
+      }
+    };
 
-useEffect(() => {
-  const loadArticlesByType = async () => {
-    try {
-      dispatch(fetchArticlesRequest());
+    loadArticlesByType();
+  }, [storyType, filters.section, filters.year, filters.month, dispatch]);
 
-      if (storyType === "top") {
-        const topStories = await fetchTopStories(filters.section || "home");
-        dispatch(fetchFeaturedSuccess(topStories[0]));
-        dispatch(fetchArticlesSuccess(topStories));
-      } else if (storyType === "trending") {
-        const trendingStories = await fetchTrendingStories();
-        dispatch(fetchArticlesSuccess(trendingStories));
-        dispatch(fetchFeaturedSuccess(trendingStories[0]));
-      } 
-      // else if (storyType === "archived") {
-      //   const archivedStories = await fetchArchivedStories(
-      //     Number(filters.year),
-      //     Number(filters.month),
-      //   );
-      //   dispatch(fetchArticlesSuccess(archivedStories));
-      //   dispatch(fetchFeaturedSuccess(archivedStories[0]));
-      // }
-
-      setInitialLoaded(true);
-    } catch (error) {
-      dispatch(fetchArticlesFailure("Failed to load articles"));
-    }
-  };
-
-  loadArticlesByType();
-}, [storyType, filters.section, filters.year, filters.month, dispatch]);
-
-
-  
   useEffect(() => {
     if (storyType === "trending") {
       setFilters((prev) => ({
@@ -249,7 +238,7 @@ useEffect(() => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
-      {loading && <CircularProgress sx={{ mt: 4 }} />}
+      {/* {loading && <CircularProgress sx={{ mt: 4 }} />} */}
       {error && <Typography color="error">{error}</Typography>}
 
       {/* <NewsFilterBar
@@ -258,6 +247,7 @@ useEffect(() => {
         filters={filters}
         onFiltersChange={setFilters}
       /> */}
+      {loading && !featured && <FeaturedNewsCardShimmer />}
 
       {!loading && !error && featured && (
         <>
@@ -266,7 +256,7 @@ useEffect(() => {
         </>
       )}
 
-       <NewsFilterBar
+      <NewsFilterBar
         storyType={storyType}
         onStoryTypeChange={setStoryType}
         filters={filters}
@@ -280,9 +270,13 @@ useEffect(() => {
             ? "Trending Stories"
             : "Archived Stories (July 2024)"}
       </Typography>
+      {loading ? (
+        <CompactNewsGridShimmer />
+      ) : (
+        <CompactNewsGrid articles={articlesWithReadStatus} />
+      )}
 
-      {/* <CompactNewsGrid articles={filteredArticles} /> */}
-      <CompactNewsGrid articles={articlesWithReadStatus} />
+      {/* <CompactNewsGrid articles={articlesWithReadStatus} /> */}
     </Container>
   );
 };

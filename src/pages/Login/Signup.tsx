@@ -3,7 +3,6 @@
 // import { setUser } from "../../redux/action/userAction";
 // // import { setUser } from "../actions/userActions";
 
-
 // const fallbackImage = "/assets/default-user.png"; // update path
 
 // const NormalSignup = () => {

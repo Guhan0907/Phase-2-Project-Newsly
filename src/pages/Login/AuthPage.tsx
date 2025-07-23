@@ -22,11 +22,11 @@ const AuthPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-
   // for not re-accessing
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   const rawUser = useSelector((state: RootState) => state.user?.user);
-  const parsedUser = typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
+  const parsedUser =
+    typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
 
   useEffect(() => {
     if (parsedUser?.email) {
@@ -76,7 +76,8 @@ const AuthPage = () => {
     const isNameValid = name.trim() !== "";
 
     if (!isEmailValid) setEmailError("Please enter a valid email address");
-    if (!isPasswordValid) setPasswordError("Password must be at least 6 characters");
+    if (!isPasswordValid)
+      setPasswordError("Password must be at least 6 characters");
     if (!isNameValid) alert("Please enter your name");
 
     if (isEmailValid && isPasswordValid && isNameValid) {
@@ -86,7 +87,7 @@ const AuthPage = () => {
           email,
           password,
           imageUrl: fallbackImage,
-        })
+        }),
       );
 
       // Optional: Clear fields
@@ -147,12 +148,7 @@ const AuthPage = () => {
               helperText={passwordError}
             />
 
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              fullWidth
-            >
+            <Button variant="contained" color="primary" type="submit" fullWidth>
               Sign In / Sign Up
             </Button>
           </Stack>

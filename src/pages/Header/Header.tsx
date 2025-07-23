@@ -208,8 +208,6 @@
 
 // export default Header;
 
-
-
 import {
   AppBar,
   Toolbar,
@@ -260,9 +258,9 @@ const Header = () => {
   const showBackButton = location.pathname !== "/";
 
   const rawUser = useSelector((state: RootState) => state.user.user); // Or from localStorage
-  const parsedUser = typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
-  const isLogged = Boolean(rawUser?. email)
-
+  const parsedUser =
+    typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
+  const isLogged = Boolean(rawUser?.email);
 
   const handleSearch = () => {
     const trimmedQuery = query.trim();
@@ -292,12 +290,11 @@ const Header = () => {
     console.log("Wishlist clicked");
     navigate("/favourites");
   };
-  
-  const handleLogout = () => {
-  dispatch(logoutUser());
-  navigate("/auth");
-};
 
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/auth");
+  };
 
   return (
     <AppBar position="sticky" color="default" elevation={1}>
@@ -335,8 +332,13 @@ const Header = () => {
           </Typography>
         </Box>
 
-
-        {isLogged && <SearchBar query={query} onQueryChange={setQueryInput} onSearch={handleSearch} />}
+        {isLogged && (
+          <SearchBar
+            query={query}
+            onQueryChange={setQueryInput}
+            onSearch={handleSearch}
+          />
+        )}
 
         <Box
           sx={{
@@ -355,25 +357,24 @@ const Header = () => {
             </Badge>
           </IconButton>
 
-  {parsedUser ? (
-  <UserMenu
-    user={{ name: parsedUser.name, imageUrl: parsedUser.imageUrl }}
-    onLogout={handleLogout}
-  />
-) : (
-  <Box
-    sx={{
-      cursor: "pointer",
-      color: "primary.main",
-      fontWeight: 500,
-      fontSize: isMobile ? "0.85rem" : "1rem",
-    }}
-    onClick={() => navigate("/auth")}
-  >
-    Login
-  </Box>
-)}
-
+          {parsedUser ? (
+            <UserMenu
+              user={{ name: parsedUser.name, imageUrl: parsedUser.imageUrl }}
+              onLogout={handleLogout}
+            />
+          ) : (
+            <Box
+              sx={{
+                cursor: "pointer",
+                color: "primary.main",
+                fontWeight: 500,
+                fontSize: isMobile ? "0.85rem" : "1rem",
+              }}
+              onClick={() => navigate("/auth")}
+            >
+              Login
+            </Box>
+          )}
         </Box>
       </Toolbar>
     </AppBar>
