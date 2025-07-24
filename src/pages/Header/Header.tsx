@@ -1,279 +1,175 @@
-// import {
-//   AppBar,
-//   Toolbar,
-//   Typography,
-//   InputBase,
-//   IconButton,
-//   Box,
-//   Menu,
-//   MenuItem,
-//   Avatar,
-//   Badge,
-//   useMediaQuery,
-//   useTheme,
-// } from '@mui/material';
-// import { Search, Favorite, Logout } from '@mui/icons-material';
-// import { useState } from 'react';
-
-// interface HeaderProps {
-//   onSearch: (query: string) => void;
-//   onLogout: () => void;
-//   user: { name: string; avatar: string } | null;
-// }
-
-// const Header = ({ onSearch, onLogout, user }: HeaderProps) => {
-//   const theme = useTheme();
-//   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-//   const [query, setQuery] = useState('');
-//   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-//   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-//     setAnchorEl(event.currentTarget);
-//     console.log("Something got clicked")
-//   };
-
-//   const handleMenuClose = () => {
-//     setAnchorEl(null);
-//   };
-
-//   const handleSearch = () => {
-//     if (query.trim()) {
-//       onSearch(query.trim());
-//     }
-//   };
-
-//   const handleWishList = () => {
-//     console.log("WishList Icon got clicked");
-
-//   }
-
-//   return (
-//     <AppBar position="sticky" color="default" elevation={1}>
-//       <Toolbar sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
-//         {/* Logo */}
-//         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-//           Newsly
-//         </Typography>
-
-//         {/* Search bar */}
-//         <Box
-//           sx={{
-//             display: 'flex',
-//             alignItems: 'center',
-//             border: '1px solid',
-//             borderColor: 'divider',
-//             borderRadius: 2,
-//             px: 1,
-//             py: 0.5,
-//             width: isMobile ? '100%' : '40%',
-//             mt: isMobile ? 1 : 0,
-//           }}
-//         >
-//           <InputBase
-//             placeholder="Search news..."
-//             value={query}
-//             onChange={(e) => setQuery(e.target.value)}
-//             sx={{ flex: 1, pl: 1 }}
-//             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-//           />
-//           <IconButton size="small" onClick={handleSearch}>
-//             <Search />
-//           </IconButton>
-//         </Box>
-
-//         {/* Icons */}
-//         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: isMobile ? 1 : 0 }}>
-//           {/* Wishlist */}
-//           <IconButton color="primary" onClick={handleWishList}>
-//             <Badge badgeContent={2} color="secondary">
-//               <Favorite />
-//             </Badge>
-//           </IconButton>
-
-//           {/* User Avatar with Menu */}
-//           {user && (
-//             <>
-//               <IconButton onClick={handleMenuOpen}>
-//                 <Avatar src={user.avatar} alt={user.name} />
-//               </IconButton>
-//               <Menu
-//                 anchorEl={anchorEl}
-//                 open={Boolean(anchorEl)}
-//                 onClose={handleMenuClose}
-//                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-//                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-//               >
-//                 <MenuItem onClick={() => { handleMenuClose(); onLogout(); }}>
-//                   <Logout fontSize="small" sx={{ mr: 1 }} /> Logout
-//                 </MenuItem>
-//               </Menu>
-//             </>
-//           )}
-//         </Box>
-//       </Toolbar>
-//     </AppBar>
-//   );
-// };
-
-// export default Header;
-
 import {
   AppBar,
   Toolbar,
-  Typography,
-  InputBase,
   IconButton,
   Box,
-  Menu,
-  MenuItem,
-  Avatar,
   Badge,
   useMediaQuery,
   useTheme,
+  Container,
 } from "@mui/material";
-import { Search, Favorite, Logout } from "@mui/icons-material";
-import { useState } from "react";
+import { ArrowBack } from "@mui/icons-material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchArticlesFailure,
+  fetchArticlesRequest,
+  fetchArticlesSuccess,
+  fetchFeaturedSuccess,
+  setSearchMode,
+} from "../../redux/action/articlesAction";
+import { searchArticles } from "../../redux/action/searchAction";
+import { logoutUser } from "../../redux/action/userAction";
+import { type AppDispatch, type RootState } from "../../redux/store";
+import { fetchTopStories, fetchTimesWireNews } from "../../services/apiCalls";
+import SearchBar from "./SearchBar";
+import UserMenu from "./UserMenu";
+import newsly from "../../assets/no_background.png";
+import useDebounce from "../../hooks/useDebounce";
+import LogoutConfirmDialog from "./LogoutConfirmDialog";
+import { clearFavourites } from "../../redux/action/favouritesAction";
+import { clearHistory } from "../../redux/action/historyActions";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 
-interface HeaderProps {
-  onSearch: (query: string) => void;
-  onLogout: () => void;
-  user: { name: string; avatar: string } | null;
-}
-
-const Header = ({ onSearch, onLogout, user }: HeaderProps) => {
+const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [query, setQuery] = useState("");
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const showBackButton = location.pathname !== "/";
+  const favourites = useSelector((state: RootState) => state.favourites);
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
+  const rawUser = useSelector((state: RootState) => state.user.user);
+  const parsedUser =
+    typeof rawUser === "string" ? JSON.parse(rawUser)?.user : rawUser;
+  const isLogged = !!parsedUser?.email;
+
+  const [query, setQueryInput] = useState("");
+  const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
+  const debouncedQuery = useDebounce(query, 1000);
+
+  const fetchDefaultArticles = () => {
+    dispatch(setSearchMode(false));
+    dispatch(fetchArticlesRequest());
+
+    Promise.all([fetchTopStories(), fetchTimesWireNews()])
+      .then(([topStories, featured]) => {
+        dispatch(fetchArticlesSuccess(topStories));
+        dispatch(fetchFeaturedSuccess(featured[0]));
+      })
+      .catch(() => {
+        dispatch(fetchArticlesFailure("Failed to load articles."));
+      });
   };
 
   const handleSearch = () => {
-    if (query.trim()) {
-      onSearch(query.trim());
+    const trimmed = query.trim();
+    if (!trimmed) {
+      fetchDefaultArticles();
+    } else {
+      dispatch(searchArticles(trimmed));
     }
-    console.log("Search item done");
   };
 
-  const handleWishList = () => {
-    console.log("Wishlist clicked");
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    dispatch(clearFavourites());
+    dispatch(clearHistory());
+    navigate("/auth");
   };
+
+  useEffect(() => {
+    if (!isLogged) return;
+    const trimmed = debouncedQuery.trim();
+
+    if (!trimmed) {
+      fetchDefaultArticles();
+    } else {
+      dispatch(searchArticles(trimmed));
+    }
+  }, [debouncedQuery, isLogged]);
 
   return (
-    <AppBar position="sticky" color="default" elevation={1}>
-      <Toolbar
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: isMobile ? 0.5 : 2,
-          px: 1,
-          py: isMobile ? 0.5 : 1,
-        }}
-      >
-        {/* Logo */}
-        <Typography
-          variant="h6"
-          sx={{
-            fontWeight: 600,
-            fontSize: isMobile ? "1rem" : "1.25rem",
-            whiteSpace: "nowrap",
-          }}
-        >
-          Newsly
-        </Typography>
+    <>
+      <AppBar position="sticky" color="default" elevation={1}>
+        <Container maxWidth="xl">
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box display="flex" alignItems="center">
+              {showBackButton && (
+                <IconButton onClick={() => navigate(-1)} sx={{ mr: 1 }}>
+                  <ArrowBack fontSize={isMobile ? "small" : "medium"} />
+                </IconButton>
+              )}
+              <Box
+                component="img"
+                src={newsly}
+                alt="Newsly Logo"
+                onClick={() => navigate("/")}
+                sx={{
+                  width: 80,
+                  height: 70,
+                  borderRadius: 2,
+                  cursor: "pointer",
+                }}
+              />
+            </Box>
 
-        {/* Search bar */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 2,
-            px: 1,
-            py: isMobile ? 0.25 : 0.5,
-            width: isMobile ? "40%" : "50%",
-          }}
-        >
-          <InputBase
-            placeholder="Search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            sx={{
-              flex: 1,
-              fontSize: isMobile ? "0.8rem" : "1rem",
-              pl: 0.5,
-            }}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-          <IconButton size="small" onClick={handleSearch}>
-            <Search fontSize={isMobile ? "small" : "medium"} />
-          </IconButton>
-        </Box>
+            {isLogged && (
+              <SearchBar
+                query={query}
+                onQueryChange={setQueryInput}
+                onSearch={handleSearch}
+              />
+            )}
 
-        {/* Icons */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: isMobile ? 0.5 : 1,
-          }}
-        >
-          {/* Wishlist */}
-          <IconButton
-            color="primary"
-            onClick={handleWishList}
-            size={isMobile ? "small" : "medium"}
-          >
-            <Badge badgeContent={2} color="secondary">
-              <Favorite fontSize={isMobile ? "small" : "medium"} />
-            </Badge>
-          </IconButton>
-
-          {/* User Avatar */}
-          {user && (
-            <>
+            <Box display="flex" alignItems="center" gap={isMobile ? 0.5 : 1}>
               <IconButton
-                onClick={handleMenuOpen}
-                size={isMobile ? "small" : "medium"}
+                onClick={() => navigate("/favourites")}
+                color="primary"
               >
-                <Avatar
-                  src={user.avatar}
-                  alt={user.name}
-                  sx={{ width: isMobile ? 30 : 36, height: isMobile ? 30 : 36 }}
-                />
+                <Badge badgeContent={favourites.length} color="success">
+                  <BookmarkBorderOutlinedIcon
+                    fontSize={isMobile ? "medium" : "large"}
+                  />
+                </Badge>
               </IconButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                transformOrigin={{ vertical: "top", horizontal: "right" }}
-              >
-                <MenuItem
-                  onClick={() => {
-                    handleMenuClose();
-                    onLogout();
+
+              {parsedUser ? (
+                <UserMenu
+                  user={{
+                    name: parsedUser.name,
+                    imageUrl: parsedUser.imageUrl,
+                  }}
+                  onLogout={() => setOpenLogoutConfirm(true)}
+                />
+              ) : (
+                <Box
+                  onClick={() => navigate("/auth")}
+                  sx={{
+                    cursor: "pointer",
+                    color: "primary.main",
+                    fontWeight: 500,
+                    fontSize: isMobile ? "0.85rem" : "1rem",
                   }}
                 >
-                  <Logout fontSize="small" sx={{ mr: 1 }} /> Logout
-                </MenuItem>
-              </Menu>
-            </>
-          )}
-        </Box>
-      </Toolbar>
-    </AppBar>
+                  Login
+                </Box>
+              )}
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      <LogoutConfirmDialog
+        open={openLogoutConfirm}
+        onClose={() => setOpenLogoutConfirm(false)}
+        onConfirm={handleLogout}
+      />
+    </>
   );
 };
 
