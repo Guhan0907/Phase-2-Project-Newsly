@@ -218,7 +218,7 @@ import {
 } from "@mui/material";
 import { BookmarkBorderSharp, ArrowBack } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchArticlesFailure,
@@ -229,12 +229,16 @@ import {
 } from "../../redux/action/articlesAction";
 import { searchArticles } from "../../redux/action/searchAction";
 import { logoutUser } from "../../redux/action/userAction";
-import { persistor, type AppDispatch, type RootState } from "../../redux/store";
+import { type AppDispatch, type RootState } from "../../redux/store";
 import { fetchTopStories, fetchTimesWireNews } from "../../services/apiCalls";
 import SearchBar from "./SearchBar";
 import UserMenu from "./UserMenu";
 import newsly from "../../assets/no_background.png";
 import useDebounce from "../../hooks/useDebounce";
+import LogoutConfirmDialog from "./LogoutConfirmDialog";
+import { clearFavourites } from "../../redux/action/favouritesAction";
+import { clearHistory } from "../../redux/action/historyActions";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 
 const Header = () => {
   const theme = useTheme();
@@ -253,6 +257,7 @@ const Header = () => {
   const isLogged = !!parsedUser?.email;
 
   const [query, setQueryInput] = useState("");
+  const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
   const debouncedQuery = useDebounce(query, 1000);
 
   const fetchDefaultArticles = () => {
@@ -278,9 +283,12 @@ const Header = () => {
     }
   };
 
+  // const confirmLogout = () => setOpenLogoutConfirm(true);
   const handleLogout = () => {
     dispatch(logoutUser());
-    persistor.purge();
+    dispatch(clearFavourites());
+    dispatch(clearHistory());
+    // persistor.purge();
     navigate("/auth");
   };
 
@@ -296,72 +304,86 @@ const Header = () => {
   }, [debouncedQuery, isLogged]);
 
   return (
-    <AppBar position="sticky" color="default" elevation={1}>
-      <Container maxWidth="xl">
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          {/* Left: Back + Logo */}
-          <Box display="flex" alignItems="center">
-            {showBackButton && (
-              <IconButton onClick={() => navigate(-1)} sx={{ mr: 1 }}>
-                <ArrowBack fontSize={isMobile ? "small" : "medium"} />
-              </IconButton>
-            )}
-            <Box
-              component="img"
-              src={newsly}
-              alt="Newsly Logo"
-              onClick={() => navigate("/")}
-              sx={{
-                width: 80,
-                height: 70,
-                borderRadius: 2,
-                cursor: "pointer",
-              }}
-            />
-          </Box>
-
-          {/* Center: Search */}
-          {isLogged && (
-            <SearchBar
-              query={query}
-              onQueryChange={setQueryInput}
-              onSearch={handleSearch}
-            />
-          )}
-
-          {/* Right: Wishlist + User */}
-          <Box display="flex" alignItems="center" gap={isMobile ? 0.5 : 1}>
-            <IconButton onClick={() => navigate("/favourites")} color="primary">
-              <Badge badgeContent={favourites.length} color="secondary">
-                <BookmarkBorderSharp fontSize={isMobile ? "medium" : "large"} />
-              </Badge>
-            </IconButton>
-
-            {parsedUser ? (
-              <UserMenu
-                user={{
-                  name: parsedUser.name,
-                  imageUrl: parsedUser.imageUrl,
-                }}
-                onLogout={handleLogout}
-              />
-            ) : (
+    <>
+      <AppBar position="sticky" color="default" elevation={1}>
+        <Container maxWidth="xl">
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+            {/* Left: Back + Logo */}
+            <Box display="flex" alignItems="center">
+              {showBackButton && (
+                <IconButton onClick={() => navigate(-1)} sx={{ mr: 1 }}>
+                  <ArrowBack fontSize={isMobile ? "small" : "medium"} />
+                </IconButton>
+              )}
               <Box
-                onClick={() => navigate("/auth")}
+                component="img"
+                src={newsly}
+                alt="Newsly Logo"
+                onClick={() => navigate("/")}
                 sx={{
+                  width: 80,
+                  height: 70,
+                  borderRadius: 2,
                   cursor: "pointer",
-                  color: "primary.main",
-                  fontWeight: 500,
-                  fontSize: isMobile ? "0.85rem" : "1rem",
                 }}
-              >
-                Login
-              </Box>
+              />
+            </Box>
+
+            {/* Center: Search */}
+            {isLogged && (
+              <SearchBar
+                query={query}
+                onQueryChange={setQueryInput}
+                onSearch={handleSearch}
+              />
             )}
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+
+            {/* Right: Wishlist + User */}
+            <Box display="flex" alignItems="center" gap={isMobile ? 0.5 : 1}>
+              <IconButton
+                onClick={() => navigate("/favourites")}
+                color="primary"
+              >
+                <Badge badgeContent={favourites.length} color="secondary">
+                  <BookmarkBorderOutlinedIcon
+                    fontSize={isMobile ? "medium" : "large"}
+                  />
+                </Badge>
+              </IconButton>
+
+              {parsedUser ? (
+                <UserMenu
+                  user={{
+                    name: parsedUser.name,
+                    imageUrl: parsedUser.imageUrl,
+                  }}
+                  onLogout={() => setOpenLogoutConfirm(true)}
+                />
+              ) : (
+                <Box
+                  onClick={() => navigate("/auth")}
+                  sx={{
+                    cursor: "pointer",
+                    color: "primary.main",
+                    fontWeight: 500,
+                    fontSize: isMobile ? "0.85rem" : "1rem",
+                  }}
+                >
+                  Login
+                </Box>
+              )}
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      {/* Logout Confirmation Dialog */}
+      <LogoutConfirmDialog
+        open={openLogoutConfirm}
+        onClose={() => setOpenLogoutConfirm(false)}
+        onConfirm={handleLogout}
+      />
+    </>
   );
 };
 

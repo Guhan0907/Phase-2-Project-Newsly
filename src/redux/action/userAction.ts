@@ -16,3 +16,7 @@ export const setUser = (user: User) => ({
 export const logoutUser = () => ({
   type: LOGOUT_USER,
 });
+
+export type UserAction =
+  | ReturnType<typeof setUser>
+  | ReturnType<typeof logoutUser>;

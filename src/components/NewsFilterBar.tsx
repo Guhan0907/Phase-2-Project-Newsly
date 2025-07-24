@@ -1,5 +1,4 @@
 import {
-  Box,
   FormControl,
   InputLabel,
   MenuItem,
@@ -12,17 +11,19 @@ import {
 } from "@mui/material";
 import React from "react";
 
+type FilterOptions = {
+  section?: string;
+  category?: string;
+  date?: string;
+  year?: string;
+  month?: string;
+};
+
 interface NewsFilterBarProps {
   storyType: string;
   onStoryTypeChange: (type: string) => void;
-  filters: {
-    section?: string;
-    category?: string;
-    date?: string;
-    year?: string;
-    month?: string;
-  };
-  onFiltersChange: (filters: any) => void;
+  filters: FilterOptions;
+  onFiltersChange: (filters: FilterOptions) => void;
 }
 
 const NewsFilterBar = ({
@@ -34,9 +35,10 @@ const NewsFilterBar = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // Unified handler for both TextField & Select
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement> | SelectChangeEvent<string>,
+   const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>,
   ) => {
     const { name, value } = e.target;
     onFiltersChange({ ...filters, [name]: value });
@@ -71,7 +73,7 @@ const NewsFilterBar = ({
           <InputLabel>Section</InputLabel>
           <Select
             name="section"
-            value={filters.section}
+            value={filters.section || ""}
             label="Section"
             onChange={handleChange}
           >
@@ -113,5 +115,4 @@ const NewsFilterBar = ({
   );
 };
 
-// export default NewsFilterBar;
 export default React.memo(NewsFilterBar);

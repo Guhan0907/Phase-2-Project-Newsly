@@ -1,19 +1,51 @@
-import type { AnyAction } from "redux";
+// import {
+//   ADD_TO_HISTORY,
+//   CLEAR_HISTORY,
+//   type AddToHistoryAction,
+// } from "../action/historyActions";
+
+// const initialState: string[] = [];
+
+// const historyReducer = (
+//   state = initialState,
+//   action: AddToHistoryAction,
+// ):
+//  string[] => {
+
+//   switch (action.type) {
+//     case ADD_TO_HISTORY:
+//       if (state.includes(action.payload)) return state;
+//       return [action.payload, ...state.slice(0, 19)]; // Keep only last 20
+
+//     case CLEAR_HISTORY:
+//       return []; // Clears the history
+//     default:
+//       return state;
+//   }
+// };
+
+// export default historyReducer;
+
 import {
   ADD_TO_HISTORY,
-  type AddToHistoryAction,
+  CLEAR_HISTORY,
+  type HistoryAction,
 } from "../action/historyActions";
 
 const initialState: string[] = [];
 
 const historyReducer = (
   state = initialState,
-  action: AddToHistoryAction,
+  action: HistoryAction, // accept both actions
 ): string[] => {
   switch (action.type) {
     case ADD_TO_HISTORY:
       if (state.includes(action.payload)) return state;
-      return [action.payload, ...state.slice(0, 19)]; // Keep only last 20
+      return [action.payload, ...state.slice(0, 19)];
+
+    case CLEAR_HISTORY:
+      return [];
+
     default:
       return state;
   }

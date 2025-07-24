@@ -35,3 +35,11 @@ export interface NYTArticle {
     }[];
   }[];
 }
+
+export type FilterOptions = {
+  category: string;
+  section: string;
+  date: string;
+  year: string;
+  month: string;
+};

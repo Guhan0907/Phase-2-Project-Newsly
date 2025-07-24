@@ -53,7 +53,6 @@ export const fetchArticleById = async (id: string) => {
 
   if (trendingMatch) return trendingMatch;
 
-  // Optional: throw or return null if not found
   throw new Error("Article not found in Top or Trending stories");
 };
 

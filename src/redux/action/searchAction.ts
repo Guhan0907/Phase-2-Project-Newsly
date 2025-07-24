@@ -27,15 +27,6 @@ export const searchArticles = (query: string) => {
           },
         },
       );
-      //       const response = await axios.get(
-      //   "https://api.nytimes.com/svc/search/v2/articlesearch.json",
-      //   {
-      //     params: {
-      //       q: query,
-      //       "api-key": "hYkc8iBqGJP2kGxLmDeaVBUfxOGMND70", // hardcoded for test
-      //     },
-      //   }
-      // );
 
       const docs = response.data?.response?.docs;
 
@@ -43,13 +34,34 @@ export const searchArticles = (query: string) => {
         throw new Error("Unexpected API response structure");
       }
 
+      // const formattedArticles: NYTArticle[] = docs.map((doc: any) => ({
+      //   title: doc.headline?.main || "",
+      //   abstract: doc.abstract || doc.snippet || "",
+      //   url: doc.web_url,
+      //   byline: doc.byline?.original || "",
+      //   published_date: doc.pub_date || "",
+      //   multimedia: doc.multimedia?.length
+      //     ? doc.multimedia.map((m: any) => ({
+      //         url: m.url.startsWith("http")
+      //           ? m.url
+      //           : `https://www.nytimes.com/${m.url}`,
+      //         format: m.subtype || "",
+      //         height: m.height,
+      //         width: m.width,
+      //         type: m.type,
+      //         subtype: m.subtype,
+      //         caption: doc.snippet || "",
+      //       }))
+      //     : [],
+      // }));
+
       const formattedArticles: NYTArticle[] = docs.map((doc: any) => ({
         title: doc.headline?.main || "",
         abstract: doc.abstract || doc.snippet || "",
         url: doc.web_url,
         byline: doc.byline?.original || "",
         published_date: doc.pub_date || "",
-        multimedia: doc.multimedia?.length
+        multimedia: Array.isArray(doc.multimedia)
           ? doc.multimedia.map((m: any) => ({
               url: m.url.startsWith("http")
                 ? m.url
@@ -62,15 +74,15 @@ export const searchArticles = (query: string) => {
               caption: doc.snippet || "",
             }))
           : [],
+        // ✅ Add the missing fields
+        section: doc.section_name || "",
+        subsection: doc.subsection_name || "",
+        isRead: false, // default value, since NYT API doesn’t give this
       }));
 
       dispatch(fetchArticlesSuccess(formattedArticles));
-      console.log("✅ Dispatching articles to reducer:", formattedArticles);
+      console.log("Dispatching articles to reducer:", formattedArticles);
     } catch (error: any) {
-      //  catch (error: any) {
-      //   console.error("Search API Error:", error?.response?.data || error.message || error);
-      //   dispatch(fetchArticlesFailure("Search failed. Please try again."));
-      // }
       console.error("Error details:", error);
       console.error("Full response:", error?.response?.data || error.message);
 

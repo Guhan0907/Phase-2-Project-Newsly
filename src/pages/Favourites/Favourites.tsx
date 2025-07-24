@@ -112,7 +112,7 @@
 // export default Favourites;
 
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../../redux/store";
 import type { NYTArticle } from "../../types/article";
@@ -121,6 +121,7 @@ import { removeFromFavourites } from "../../redux/action/favouritesAction";
 import AllItemsCard from "../../components/AllItemCard";
 import AllItemsCardShimmer from "../Shimmer/AllItemCardShimmer";
 import { useNavigate } from "react-router-dom";
+import no_article_image from "../../assets/No_Article.png"
 
 const Favourites = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -204,12 +205,49 @@ const Favourites = () => {
   // Empty state
   if (noSavedArticles) {
     return (
-      <Box textAlign="center" mt={5}>
-        <Typography variant="h6">No articles saved yet.</Typography>
-        <Typography variant="body2" color="text.secondary">
-          Use the “Save” ❤️ button on any article to view it here later.
-        </Typography>
-      </Box>
+      // <Box textAlign="center" mt={5}>
+      //   <Typography variant="h6">No articles saved yet.</Typography>
+      //   <Typography variant="body2" color="text.secondary">
+      //     Use the “Save” ❤️ button on any article to view it here later.
+      //   </Typography>
+      // </Box>
+      <Box
+  display="flex"
+  flexDirection="column"
+  alignItems="center"
+  justifyContent="center"
+  sx={{
+    mt: 8,
+    px: 2,
+  }}
+>
+  <Box
+    component="img"
+    src={no_article_image}
+    alt="No saved articles"
+    sx={{
+      width: { xs: "90%", sm: 320 },
+      maxWidth: 400,
+      objectFit: "contain",
+      mb: 3,
+      filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.1))",
+    }}
+  />
+
+  <Typography variant="h6" fontWeight="bold" gutterBottom>
+    You haven’t saved anything yet
+  </Typography>
+
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={() => navigate("/")}
+    sx={{ borderRadius: 999, textTransform: "none", px: 4, py: 1.2 }}
+  >
+    Discover News
+  </Button>
+</Box>
+
     );
   }
 

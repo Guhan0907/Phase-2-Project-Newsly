@@ -5,3 +5,4 @@ export const setCategoryFromFooter = (category: string) => ({
   type: SET_CATEGORY_FROM_FOOTER,
   payload: category,
 });
+export type CategoryAction = ReturnType<typeof setCategoryFromFooter>;

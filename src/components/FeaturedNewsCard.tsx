@@ -32,7 +32,7 @@ const FeaturedNewsCard = ({ article, index }: Props) => {
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        cursor: "pointer", // Indicate clickability
+        cursor: "pointer", 
         transition: "transform 0.2s",
         "&:hover": {
           transform: "scale(1.01)",
@@ -59,5 +59,4 @@ const FeaturedNewsCard = ({ article, index }: Props) => {
   );
 };
 
-// export default FeaturedNewsCard;
 export default React.memo(FeaturedNewsCard);

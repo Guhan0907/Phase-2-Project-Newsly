@@ -40,21 +40,19 @@ const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
               },
             }}
           >
-            {article.multimedia?.[0]?.url && (
-              <CardMedia
-                component="img"
-                image={article.multimedia[0].url}
-                height="160"
-                alt={article.title}
-              />
-            )}
+            <CardMedia
+              component="img"
+              image={article.multimedia?.[0]?.url || "src/assets/No_image.jpeg"}
+              height="160"
+              alt={article.title}
+            />
+
             <CardContent>
               {article.isRead && (
                 <Chip
                   label="Read"
                   size="small"
                   sx={{
-                    //  fontFamily: `'Roboto', sans-serif`,
                     position: "absolute",
                     top: 8,
                     right: 8,
@@ -70,7 +68,6 @@ const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
                 noWrap
                 gutterBottom
                 sx={{
-                  // fontFamily: `'Playfair Display', serif`,
                   color: article.isRead ? "#FF9800" : "text.primary",
                   fontStyle: article.isRead ? "italic" : "normal",
                   fontWeight: article.isRead ? 500 : "bold",
@@ -84,7 +81,6 @@ const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
                 color="text.secondary"
                 noWrap
                 sx={{
-                  // fontFamily: `'Roboto', sans-serif`,
                   fontStyle: article.isRead ? "italic" : "normal",
                 }}
               >
@@ -100,83 +96,3 @@ const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
 
 // export default CompactNewsGrid;
 export default React.memo(CompactNewsGrid);
-
-// import {
-//   Grid,
-//   Card,
-//   CardMedia,
-//   CardContent,
-//   Typography,
-//   Chip,
-// } from "@mui/material";
-// import { useNavigate } from "react-router-dom";
-// import type { NYTArticle } from "../types/article";
-
-// interface CompactNewsGridProps {
-//   articles: (NYTArticle & { isRead?: boolean })[];
-// }
-
-// const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
-//   const navigate = useNavigate();
-
-//   const handleClick = (url: string) => {
-//     navigate(`/article/${encodeURIComponent(url)}`);
-//   };
-
-//   const renderCard = (article: NYTArticle & { isRead?: boolean }) => (
-//     <Card
-//       onClick={() => handleClick(article.url)}
-//       sx={{
-//         height: "100%",
-//         cursor: "pointer",
-//         display: "flex",
-//         flexDirection: "column",
-//         transition: "0.3s",
-//         "&:hover": { boxShadow: 6 },
-//       }}
-//     >
-//       {article.multimedia?.[0]?.url && (
-//         <CardMedia
-//           component="img"
-//           height="160"
-//           image={article.multimedia[0].url}
-//           alt={article.title}
-//         />
-//       )}
-//       <CardContent sx={{ flexGrow: 1 }}>
-//         <Typography variant="subtitle1" fontWeight="bold" gutterBottom noWrap>
-//           {article.title}
-//         </Typography>
-//         <Typography variant="body2" color="text.secondary" noWrap>
-//           {article.abstract}
-//         </Typography>
-//         {article.isRead && (
-//           <Chip
-//             label="Read"
-//             size="small"
-//             color="success"
-//             sx={{ mt: 1 }}
-//           />
-//         )}
-//       </CardContent>
-//     </Card>
-//   );
-
-//   if (articles.length === 1) {
-//     // Render a single card without a container
-//     return renderCard(articles[0]);
-//   }
-
-//   // Render full grid
-//   return (
-//     <Grid container spacing={2}>
-//       {articles.map((article, index) => (
-//         <Grid item xs={12} sm={6} md={4} key={index}>
-//           {renderCard(article)}
-//         </Grid>
-//       ))}
-//     </Grid>
-//   );
-// };
-
-// export default CompactNewsGrid;

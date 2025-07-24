@@ -47,7 +47,7 @@ const ArticleDetailHeading = ({ article }: { article: NYTArticle }) => {
         <Stack direction="row" spacing={1} mt={1} mb={2} flexWrap="wrap">
           {article.section && <Chip label={article.section} color="primary" />}
           {article.subsection && (
-            <Chip label={article.subsection} color="secondary" />
+            <Chip label={article.subsection} color="primary" />
           )}
         </Stack>
       )}

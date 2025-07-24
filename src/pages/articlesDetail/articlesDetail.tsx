@@ -196,9 +196,9 @@ const ArticleDetail = () => {
 
   const favourites = useSelector((state: RootState) => state.favourites);
 
-  // Memoize `isSaved` status
   const isSaved = useMemo(() => {
-    return article?.url && favourites.includes(article.url);
+    if (!article?.url) return false;
+    return favourites.includes(article.url);
   }, [favourites, article?.url]);
 
   // Scroll to top on mount
@@ -308,7 +308,7 @@ const ArticleDetail = () => {
         {article.abstract}
       </Typography>
 
-      {article.des_facet?.length > 0 && (
+      {Array.isArray(article.des_facet) && article.des_facet.length > 0 && (
         <>
           <Typography variant="subtitle2" fontWeight={600} gutterBottom>
             Related Topics:
@@ -325,7 +325,8 @@ const ArticleDetail = () => {
         <ArticleDetailAction
           isSaved={isSaved}
           onSave={handleSave}
-          onShare={handleShare}
+          // onShare={handleShare}
+          articleTitle={article.title}
         />
       </Box>
 

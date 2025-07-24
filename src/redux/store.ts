@@ -9,6 +9,17 @@ import { favouritesReducer } from "./reducer/favouritesReducer";
 import historyReducer from "./reducer/historyReducer";
 import userReducer from "./reducer/userReducer";
 import { categoryReducer } from "./reducer/categoryReducer";
+import type { FavouritesAction } from "./action/favouritesAction";
+import type { HistoryAction } from "./action/historyActions";
+import type { UserAction } from "./action/userAction";
+import type { CategoryAction } from "./action/categoryAction";
+
+export type AppActions =
+  | ArticlesAction
+  | FavouritesAction
+  | HistoryAction
+  | UserAction
+  | CategoryAction;
 
 const middlewareList = [thunk, logger];
 const enhancer = compose(applyMiddleware(...middlewareList));
@@ -40,4 +51,6 @@ export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-export type AppDispatch = ThunkDispatch<RootState, unknown, ArticlesAction>;
+// export type AppDispatch = ThunkDispatch<RootState, unknown, ArticlesAction>;
+
+export type AppDispatch = ThunkDispatch<RootState, unknown, AppActions>;

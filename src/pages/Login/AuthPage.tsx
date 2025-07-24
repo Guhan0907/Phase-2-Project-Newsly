@@ -8,7 +8,10 @@ import {
   Stack,
   useTheme,
   useMediaQuery,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import GoogleSignIn from "./GoogleSignIn";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../redux/action/userAction";
@@ -22,7 +25,6 @@ const AuthPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  // for not re-accessing
   const navigate = useNavigate();
   const rawUser = useSelector((state: RootState) => state.user?.user);
   const parsedUser =
@@ -30,7 +32,7 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (parsedUser?.email) {
-      navigate("/"); // or another page
+      navigate("/");
     }
   }, [parsedUser]);
 
@@ -41,13 +43,22 @@ const AuthPage = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
   const validateEmail = (value: string): boolean => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(value);
   };
 
-  const validatePassword = (value: string): boolean => {
-    return value.length >= 6;
+  const validatePasswordWithFeedback = (value: string): string => {
+    if (value.length < 8) return "At least 8 characters required";
+    if (!/[A-Z]/.test(value)) return "Must contain an uppercase letter";
+    if (!/[a-z]/.test(value)) return "Must contain a lowercase letter";
+    if (!/\d/.test(value)) return "Must contain a number";
+    if (!/[!@#$%^&*()_+[\]{};':"\\|,.<>/?]/.test(value))
+      return "Must contain a special character";
+    return ""; // No error
   };
 
   const handleEmailChange = (value: string) => {
@@ -61,26 +72,22 @@ const AuthPage = () => {
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    if (value === "" || !validatePassword(value)) {
-      setPasswordError("Password must be at least 6 characters");
-    } else {
-      setPasswordError("");
-    }
+    const error = validatePasswordWithFeedback(value);
+    setPasswordError(error);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const isEmailValid = validateEmail(email);
-    const isPasswordValid = validatePassword(password);
+    const passwordFeedback = validatePasswordWithFeedback(password);
     const isNameValid = name.trim() !== "";
 
     if (!isEmailValid) setEmailError("Please enter a valid email address");
-    if (!isPasswordValid)
-      setPasswordError("Password must be at least 6 characters");
+    if (passwordFeedback) setPasswordError(passwordFeedback);
     if (!isNameValid) alert("Please enter your name");
 
-    if (isEmailValid && isPasswordValid && isNameValid) {
+    if (isEmailValid && !passwordFeedback && isNameValid) {
       dispatch(
         setUser({
           name,
@@ -89,8 +96,6 @@ const AuthPage = () => {
           imageUrl: fallbackImage,
         }),
       );
-
-      // Optional: Clear fields
       setName("");
       setEmail("");
       setPassword("");
@@ -139,13 +144,22 @@ const AuthPage = () => {
 
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               fullWidth
               required
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
               error={!!passwordError}
               helperText={passwordError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={togglePasswordVisibility} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             <Button variant="contained" color="primary" type="submit" fullWidth>

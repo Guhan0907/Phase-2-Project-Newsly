@@ -222,7 +222,7 @@ const Footer = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  // 🔁 Callback for setting category from footer
+  //  Callback for setting category from footer
   const handleCategoryClick = useCallback(
     (category: string) => {
       dispatch(setCategoryFromFooter(category));
@@ -230,12 +230,12 @@ const Footer = () => {
     [dispatch],
   );
 
-  // 🔁 Contact Us navigation
+  //  Contact Us navigation
   const handleContactUs = useCallback(() => {
     navigate("/contact");
   }, [navigate]);
 
-  // 🔁 Subscribe handler with validation
+  //  Subscribe handler with validation
   const handleSubscribe = useCallback(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (emailRegex.test(email)) {
@@ -262,7 +262,7 @@ const Footer = () => {
     >
       <Grid container spacing={4}>
         {/* Logo + Description */}
-        <Grid item xs={12} sm={6} md={4}>
+        {/* <Grid item xs={12} sm={6} md={4}>
           <Box display="flex" alignItems="center" mb={2}>
             <Box
               component="img"
@@ -279,7 +279,39 @@ const Footer = () => {
           <Typography variant="body2" color="text.secondary">
             Your personalized New York Times powered internal news platform.
           </Typography>
-        </Grid>
+        </Grid> */}
+
+        <Grid item xs={12} sm={6} md={4}>
+  <Box display="flex" alignItems="center" mb={2}>
+    <Box
+      component="img"
+      src={newsly}
+      alt="Newsly Logo"
+      sx={{
+        width: 100,
+        height: 90,
+        borderRadius: "8px",
+        mr: 2,
+      }}
+    />
+    <Typography variant="h6" fontWeight={600}>
+      Newsly
+    </Typography>
+  </Box>
+
+  <Typography variant="body2" color="text.secondary" gutterBottom>
+    <strong>Newsly</strong> is your personalized, intelligent internal news aggregator powered by <strong>The New York Times</strong>. 
+  </Typography>
+
+  <Typography variant="body2" color="text.secondary" gutterBottom>
+    Stay ahead with curated top stories, trending insights, and real-time updates—all tailored to your interests and organization.
+  </Typography>
+
+  <Typography variant="body2" color="text.secondary">
+    Designed for teams who want news that matters, without the noise.
+  </Typography>
+</Grid>
+
 
         {/* Categories */}
         <Grid
@@ -318,7 +350,7 @@ const Footer = () => {
           {isSubscribed ? (
             <Typography
               variant="body2"
-              color="success.main"
+              color="success"
               sx={{ fontWeight: "bold", mt: 1 }}
             >
               🎉 You have subscribed!
@@ -386,7 +418,7 @@ const Footer = () => {
           <Link
             href="https://rently.com"
             target="_blank"
-            rel="noopener noreferrer"
+            // rel="noopener noreferrer"
             underline="hover"
           >
             Guhan @ Rently India

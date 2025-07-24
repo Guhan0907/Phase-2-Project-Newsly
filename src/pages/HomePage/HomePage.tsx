@@ -372,7 +372,7 @@ const HomePage = () => {
     setStoryType(type);
   }, []);
 
-  const handleFiltersChange = useCallback((newFilters: typeof filters) => {
+  const handleFiltersChange = useCallback((newFilters: any) => {
     setFilters(newFilters);
   }, []);
 
