@@ -33,9 +33,28 @@ export const fetchTimesWireNews = async () => {
   return res.data.results;
 };
 
+// export const fetchArticleById = async (id: string) => {
+//   const res = await fetchTopStories();
+//   return res.find((article: any) => article.url === id);
+// };
+
 export const fetchArticleById = async (id: string) => {
-  const res = await fetchTopStories();
-  return res.find((article: any) => article.url === id);
+  // First: check in Top Stories
+  const topStories = await fetchTopStories();
+  const topMatch = topStories.find((article: any) => article.url === id);
+
+  if (topMatch) return topMatch;
+
+  // Fallback: check in Trending
+  const trendingStories = await fetchTrendingStories();
+  const trendingMatch = trendingStories.find(
+    (article: any) => article.url === id,
+  );
+
+  if (trendingMatch) return trendingMatch;
+
+  // Optional: throw or return null if not found
+  throw new Error("Article not found in Top or Trending stories");
 };
 
 // for section

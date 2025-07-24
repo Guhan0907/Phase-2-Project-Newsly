@@ -1,4 +1,3 @@
-// components/ProtectedRoutes.tsx
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { ReactNode } from "react";

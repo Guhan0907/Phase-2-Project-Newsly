@@ -28,6 +28,10 @@ const SearchBar = ({ query, onQueryChange, onSearch }: SearchBarProps) => {
         px: 1,
         py: isMobile ? 0.25 : 0.5,
         width: isMobile ? "40%" : "50%",
+        transition: "box-shadow 0.3s ease",
+        "&:hover": {
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+        },
       }}
     >
       <InputBase

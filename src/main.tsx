@@ -77,12 +77,16 @@ const router = createBrowserRouter([
         path: "auth",
         element: <AuthPage />, // Public login page
       },
+      {
+        path: "*",
+        element: <PageNotFound />,
+      },
     ],
   },
-  {
-    path: "*",
-    element: <PageNotFound />,
-  },
+  // {
+  //   path: "*",
+  //   element: <PageNotFound />,
+  // },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

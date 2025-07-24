@@ -17,7 +17,7 @@ export const useReadObserver = (onRead: Callback) => {
       },
       {
         threshold: 0.5, // 50% visible
-      }
+      },
     );
 
     observer.observe(ref.current);

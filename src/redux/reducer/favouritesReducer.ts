@@ -1,19 +1,3 @@
-// // redux/reducers/favoritesReducer.ts
-// import { type AnyAction } from "redux";
-
-// const initialState: string[] = [];
-
-// export const favoritesReducer = (state = initialState, action: AnyAction) => {
-//   switch (action.type) {
-//     case "FAVORITES/ADD":
-//       return [...new Set([...state, action.payload])]; // avoid duplicates
-//     case "FAVORITES/REMOVE":
-//       return state.filter(id => id !== action.payload);
-//     default:
-//       return state;
-//   }
-// };
-
 import {
   ADD_TO_FAVORITES,
   REMOVE_FROM_FAVORITES,
@@ -37,4 +21,32 @@ export const favouritesReducer = (
   }
 };
 
-// export default favouritesReducer;
+// import {
+//   ADD_TO_FAVORITES,
+//   REMOVE_FROM_FAVORITES,
+//   SET_FAVORITES,
+//   CLEAR_FAVORITES,
+//   type FavouritesAction,
+// } from "../action/favouritesAction";
+
+// const initialState: string[] = [];
+
+// export const favouritesReducer = (
+//   state = initialState,
+//   action: FavouritesAction
+// ): string[] => {
+//   switch (action.type) {
+//     case ADD_TO_FAVORITES:
+//       return state.includes(action.payload)
+//         ? state
+//         : [...state, action.payload];
+//     case REMOVE_FROM_FAVORITES:
+//       return state.filter((id) => id !== action.payload);
+//     case SET_FAVORITES:
+//       return action.payload;
+//     case CLEAR_FAVORITES:
+//       return [];
+//     default:
+//       return state;
+//   }
+// };

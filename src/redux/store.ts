@@ -3,13 +3,12 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { thunk, type ThunkDispatch } from "redux-thunk";
 import logger from "redux-logger";
-// import searchReducer from "./reducer/searchReducer";
 import articlesReducer from "./reducer/articleReducer";
 import type { ArticlesAction } from "./action/articlesAction";
 import { favouritesReducer } from "./reducer/favouritesReducer";
 import historyReducer from "./reducer/historyReducer";
 import userReducer from "./reducer/userReducer";
-// import type { RootState } from "./type";
+import { categoryReducer } from "./reducer/categoryReducer";
 
 const middlewareList = [thunk, logger];
 const enhancer = compose(applyMiddleware(...middlewareList));
@@ -20,6 +19,7 @@ export const rootReducer = combineReducers({
   favourites: favouritesReducer,
   history: historyReducer,
   user: userReducer,
+  ui: categoryReducer,
 });
 
 // persist config

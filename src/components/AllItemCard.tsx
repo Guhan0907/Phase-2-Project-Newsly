@@ -6,13 +6,14 @@ import {
   IconButton,
   Box,
 } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 import type { NYTArticle } from "../types/article";
 
 interface AllItemsCardProps {
   article: NYTArticle;
   showFavoriteButton?: boolean;
   onFavoriteClick?: (id: string) => void;
+  onClick?: () => void;
   showMetadata?: boolean;
   showAbstract?: boolean;
 }
@@ -21,11 +22,20 @@ const AllItemsCard = ({
   article,
   showFavoriteButton = false,
   onFavoriteClick,
+  onClick,
   showMetadata = true,
   showAbstract = true,
 }: AllItemsCardProps) => {
   return (
-    <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    <Card
+      onClick={onClick}
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        cursor: "pointer",
+      }}
+    >
       {article.multimedia?.[0]?.url && (
         <CardMedia
           component="img"
@@ -40,8 +50,12 @@ const AllItemsCard = ({
             {article.title}
           </Typography>
           {showFavoriteButton && (
-            <IconButton onClick={() => onFavoriteClick?.(article.url)}>
-              <FavoriteIcon color="error" />
+            <IconButton
+              onClick={(e) => {
+                (e.stopPropagation(), onFavoriteClick?.(article.url));
+              }}
+            >
+              <BookmarkRemoveIcon color="error" />
             </IconButton>
           )}
         </Box>

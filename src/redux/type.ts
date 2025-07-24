@@ -23,8 +23,3 @@ export interface ArticlesState {
   error: string | null;
   isSearchMode: boolean;
 }
-
-// export interface RootState {
-//     searchReducer : SearchState
-//     articlesReducer : ArticlesState
-// }

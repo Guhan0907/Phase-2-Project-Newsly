@@ -1,40 +1,3 @@
-// import {
-//   Box,
-//   FormControl,
-//   InputLabel,
-//   MenuItem,
-//   Select,
-//   type SelectChangeEvent,
-// } from "@mui/material";
-
-// interface Props {
-//   storyType: string;
-//   onStoryTypeChange: (value: string) => void;
-// }
-
-// const NewsFilterBar = ({ storyType, onStoryTypeChange }: Props) => {
-//   return (
-//     <Box display="flex" gap={2} flexWrap="wrap" mb={3}>
-//       <FormControl size="small" sx={{ minWidth: 180 }}>
-//         <InputLabel id="story-type-label">Story Type</InputLabel>
-//         <Select
-//           labelId="story-type-label"
-//           value={storyType}
-//           onChange={(e: SelectChangeEvent) => onStoryTypeChange(e.target.value)}
-//           label="Story Type"
-//         >
-//           <MenuItem value="top">Top Stories</MenuItem>
-//           <MenuItem value="trending">Trending</MenuItem>
-//           {/* <MenuItem value="archived">Archived</MenuItem> */}
-//         </Select>
-//       </FormControl>
-//     </Box>
-//   );
-// };
-
-// export default NewsFilterBar;
-
-// new code
 import {
   Box,
   FormControl,
@@ -47,6 +10,7 @@ import {
   Stack,
   type SelectChangeEvent,
 } from "@mui/material";
+import React from "react";
 
 interface NewsFilterBarProps {
   storyType: string;
@@ -107,11 +71,11 @@ const NewsFilterBar = ({
           <InputLabel>Section</InputLabel>
           <Select
             name="section"
-            value={filters.section || ""}
+            value={filters.section}
             label="Section"
             onChange={handleChange}
           >
-            <MenuItem value="">Home</MenuItem>
+            <MenuItem value="">All</MenuItem>
             <MenuItem value="world">World</MenuItem>
             <MenuItem value="us">U.S.</MenuItem>
             <MenuItem value="business">Business</MenuItem>
@@ -149,4 +113,5 @@ const NewsFilterBar = ({
   );
 };
 
-export default NewsFilterBar;
+// export default NewsFilterBar;
+export default React.memo(NewsFilterBar);
