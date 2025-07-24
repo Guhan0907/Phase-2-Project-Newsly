@@ -1,6 +1,5 @@
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/action/userAction";
-// import { setUser } from "../actions/userActions";
 
 const fallbackImage = "/assets/default-user.png";
 
@@ -16,7 +15,7 @@ export const useAuth = () => {
       setUser({
         name: userData.name,
         email: userData.email,
-        password: "", // Not applicable for Google login
+        password: "", // for Google no need
         imageUrl: userData.picture || fallbackImage,
       }),
     );

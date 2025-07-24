@@ -73,4 +73,3 @@ export type ArticlesAction =
   | fetchFeaturedSuccessAction
   | setQueryAction
   | setSearchModeAction;
-// | AddToHistoryAction

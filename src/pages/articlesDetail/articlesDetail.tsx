@@ -10,6 +10,7 @@
 // } from "@mui/material";
 // import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 // import { useLocation, useNavigate } from "react-router-dom";
+// import { useEffect, useMemo, useCallback } from "react";
 // import type { NYTArticle } from "../../types/article";
 // import { useDispatch, useSelector } from "react-redux";
 // import type { AppDispatch, RootState } from "../../redux/store";
@@ -21,25 +22,28 @@
 // import ArticleDetailAction from "./ArticleDetailAction";
 // import ArticleDetailHeading from "./ArticleDetailHeading";
 // import { useReadObserver } from "../../hooks/readObserverHook";
-// import { useEffect } from "react";
 
 // const ArticleDetail = () => {
 //   const { state } = useLocation();
 //   const article: NYTArticle = state?.article;
-
 //   const navigate = useNavigate();
 //   const theme = useTheme();
 //   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-//   //typescript
 //   const dispatch = useDispatch<AppDispatch>();
-//   const favourites = useSelector((state: RootState) => state.favourites);
-//   const isSaved = favourites.includes(article.url);
 
-//   // to scroll to the top
+//   const favourites = useSelector((state: RootState) => state.favourites);
+
+//   const isSaved = useMemo(() => {
+//     if (!article?.url) return false;
+//     return favourites.includes(article.url);
+//   }, [favourites, article?.url]);
+
+//   // Scroll to top on mount
 //   useEffect(() => {
-//     window.scrollTo({ top: 0, behavior: "instant" }); // or "smooth"
+//     window.scrollTo({ top: 0, behavior: "instant" });
 //   }, []);
 
+//   // Handle article not found
 //   if (!article) {
 //     return (
 //       <Box p={3}>
@@ -57,39 +61,28 @@
 //     );
 //   }
 
-//   const mainImage =
-//     article.multimedia?.find((m) => m.format === "superJumbo") ??
-//     article.multimedia?.[0];
+//   const mainImage = useMemo(() => {
+//     return (
+//       article.multimedia?.find((m) => m.format === "superJumbo") ??
+//       article.multimedia?.[0]
+//     );
+//   }, [article.multimedia]);
 
-//   // for maintaining the reading history of the Article
-//   const readObserver = useReadObserver(() => {
-//     dispatch(addToHistory(article.url));
-//     console.log("History stored ======");
-//   });
+//   // Reading observer (to track read history)
+//   const readObserver = useReadObserver(
+//     useCallback(() => {
+//       dispatch(addToHistory(article.url));
+//       console.log("History stored ======");
+//     }, [dispatch, article.url]),
+//   );
 
-//   const handleShare = async () => {
-//     try {
-//       if (navigator.share) {
-//         await navigator.share({
-//           title: article.title,
-//           text: article.abstract,
-//         });
-//       } else {
-//         alert("Share not supported on this browser.");
-//       }
-//     } catch (err) {
-//       console.error("Error sharing:", err);
-//     }
-//   };
-
-//   const handleSave = () => {
-//     console.log("Saved article:", article.title);
+//   const handleSave = useCallback(() => {
 //     if (isSaved) {
 //       dispatch(removeFromFavourites(article.url));
 //     } else {
 //       dispatch(addToFavourites(article.url));
 //     }
-//   };
+//   }, [dispatch, isSaved, article.url]);
 
 //   return (
 //     <Box
@@ -134,13 +127,13 @@
 //         {article.abstract}
 //       </Typography>
 
-//       {article.des_facet?.length > 0 && (
+//       {Array.isArray(article.des_facet) && article.des_facet.length > 0 && (
 //         <>
 //           <Typography variant="subtitle2" fontWeight={600} gutterBottom>
 //             Related Topics:
 //           </Typography>
 //           <Stack direction="row" spacing={1} flexWrap="wrap" mb={3}>
-//             {article.des_facet.map((tag: any, i) => (
+//             {article.des_facet.map((tag, i) => (
 //               <Chip key={i} label={tag} variant="outlined" />
 //             ))}
 //           </Stack>
@@ -151,9 +144,10 @@
 //         <ArticleDetailAction
 //           isSaved={isSaved}
 //           onSave={handleSave}
-//           onShare={handleShare}
+//           articleTitle={article.title}
 //         />
 //       </Box>
+
 //       <Divider sx={{ my: 3 }} />
 //     </Box>
 //   );
@@ -173,7 +167,7 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import type { NYTArticle } from "../../types/article";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../redux/store";
@@ -182,31 +176,57 @@ import {
   removeFromFavourites,
 } from "../../redux/action/favouritesAction";
 import { addToHistory } from "../../redux/action/historyActions";
+import { fetchTopStories } from "../../services/apiCalls";
 import ArticleDetailAction from "./ArticleDetailAction";
 import ArticleDetailHeading from "./ArticleDetailHeading";
 import { useReadObserver } from "../../hooks/readObserverHook";
 
 const ArticleDetail = () => {
   const { state } = useLocation();
-  const article: NYTArticle = state?.article;
+  const article: NYTArticle | undefined = state?.article;
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useDispatch<AppDispatch>();
 
-  const favourites = useSelector((state: RootState) => state.favourites);
+  // Tag click logic
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [relatedArticles, setRelatedArticles] = useState<NYTArticle[]>([]);
+  const [loadingRelated, setLoadingRelated] = useState(false);
+  const [errorRelated, setErrorRelated] = useState<string | null>(null);
 
-  const isSaved = useMemo(() => {
-    if (!article?.url) return false;
-    return favourites.includes(article.url);
-  }, [favourites, article?.url]);
+  const handleTagClick = useCallback(async (tag: string) => {
+    setSelectedTag(tag);
+    setLoadingRelated(true);
+    setErrorRelated(null);
 
-  // Scroll to top on mount
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
+    try {
+      const res = await fetchTopStories();
+      console.log("res -> ", res);
+
+      const articles: NYTArticle[] = Array.isArray(res)
+        ? res
+        : (res?.results ?? []);
+      console.log("Total articles received:", articles.length);
+
+      const filtered = articles
+        .filter((a) =>
+          a.des_facet?.some((facet) =>
+            facet.toLowerCase().includes(tag.toLowerCase()),
+          ),
+        )
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 6);
+
+      setRelatedArticles(filtered);
+    } catch (err) {
+      console.error(err);
+      setErrorRelated("Failed to load related articles.");
+    } finally {
+      setLoadingRelated(false);
+    }
   }, []);
 
-  // Handle article not found
   if (!article) {
     return (
       <Box p={3}>
@@ -224,7 +244,16 @@ const ArticleDetail = () => {
     );
   }
 
-  // Memoize selected main image
+  const favourites = useSelector((state: RootState) => state.favourites);
+
+  const isSaved = useMemo(() => {
+    return favourites.includes(article.url);
+  }, [favourites, article.url]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
+
   const mainImage = useMemo(() => {
     return (
       article.multimedia?.find((m) => m.format === "superJumbo") ??
@@ -232,31 +261,13 @@ const ArticleDetail = () => {
     );
   }, [article.multimedia]);
 
-  // Reading observer (to track read history)
+  // Track read history
   const readObserver = useReadObserver(
     useCallback(() => {
       dispatch(addToHistory(article.url));
-      console.log("History stored ======");
     }, [dispatch, article.url]),
   );
 
-  // Memoized share handler
-  const handleShare = useCallback(async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: article.title,
-          text: article.abstract,
-        });
-      } else {
-        alert("Share not supported on this browser.");
-      }
-    } catch (err) {
-      console.error("Error sharing:", err);
-    }
-  }, [article.title, article.abstract]);
-
-  // Memoized save/unsave handler
   const handleSave = useCallback(() => {
     if (isSaved) {
       dispatch(removeFromFavourites(article.url));
@@ -315,7 +326,13 @@ const ArticleDetail = () => {
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap" mb={3}>
             {article.des_facet.map((tag, i) => (
-              <Chip key={i} label={tag} variant="outlined" />
+              <Chip
+                key={i}
+                label={tag}
+                variant="outlined"
+                onClick={() => handleTagClick(tag)}
+                clickable
+              />
             ))}
           </Stack>
         </>
@@ -325,12 +342,52 @@ const ArticleDetail = () => {
         <ArticleDetailAction
           isSaved={isSaved}
           onSave={handleSave}
-          // onShare={handleShare}
           articleTitle={article.title}
         />
       </Box>
 
       <Divider sx={{ my: 3 }} />
+
+      {/* Related articles based on tag */}
+      {selectedTag && (
+        <Box mt={3}>
+          <Typography variant="h6" gutterBottom>
+            Articles related to "{selectedTag}"
+          </Typography>
+
+          {loadingRelated && (
+            <Typography color="text.secondary">Loading...</Typography>
+          )}
+          {errorRelated && (
+            <Typography color="error">{errorRelated}</Typography>
+          )}
+
+          {!loadingRelated && relatedArticles.length === 0 && (
+            <Typography>No related articles found.</Typography>
+          )}
+
+          <Stack spacing={2} mt={2}>
+            {relatedArticles.map((article, idx) => (
+              <Box
+                key={idx}
+                sx={{
+                  border: `1px solid ${theme.palette.divider}`,
+                  borderRadius: 2,
+                  p: 2,
+                  backgroundColor: theme.palette.background.paper,
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight={600}>
+                  {article.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {article.abstract}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+      )}
     </Box>
   );
 };

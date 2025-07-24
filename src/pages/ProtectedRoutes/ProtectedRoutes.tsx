@@ -12,7 +12,6 @@ const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
   const parsedUser =
     typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
 
-  // Check if user exists
   if (!parsedUser || !parsedUser.email) {
     return <Navigate to="/auth" replace />;
   }

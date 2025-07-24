@@ -15,6 +15,7 @@ import Favourites from "./pages/Favourites/Favourites";
 import AuthPage from "./pages/Login/AuthPage";
 import ProtectedRoutes from "./pages/ProtectedRoutes/ProtectedRoutes";
 import Subscription from "./pages/Header/Subscription";
+import ContactUs from "./pages/Footer/ContactUs";
 
 // const theme = createTheme({
 //   palette: {
@@ -39,7 +40,7 @@ const theme = createTheme({
       main: "#BA487F", // Newsly's brand pink
     },
     secondary: {
-      main: "#a8a432", // Accent yellow
+      main: "#5dade2", // Accent yellow
     },
     error: {
       main: "#cb4335",
@@ -101,8 +102,16 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/contact",
+        element: (
+          <ProtectedRoutes>
+            <ContactUs />
+          </ProtectedRoutes>
+        ),
+      },
+      {
         path: "auth",
-        element: <AuthPage />, // Public login page
+        element: <AuthPage />,
       },
       {
         path: "*",

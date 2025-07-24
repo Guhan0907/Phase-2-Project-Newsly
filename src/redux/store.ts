@@ -24,7 +24,6 @@ export type AppActions =
 const middlewareList = [thunk, logger];
 const enhancer = compose(applyMiddleware(...middlewareList));
 
-// combined reducer
 export const rootReducer = combineReducers({
   articles: articlesReducer,
   favourites: favouritesReducer,
@@ -33,24 +32,18 @@ export const rootReducer = combineReducers({
   ui: categoryReducer,
 });
 
-// persist config
 const persistConfig = {
   key: "root",
   storage,
   whitelist: ["user", "favourites", "history"],
 };
 
-// persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer as any);
 
-// create store
 export const store = createStore(persistedReducer, enhancer);
 
-// create persistor
 export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof rootReducer>;
-
-// export type AppDispatch = ThunkDispatch<RootState, unknown, ArticlesAction>;
 
 export type AppDispatch = ThunkDispatch<RootState, unknown, AppActions>;

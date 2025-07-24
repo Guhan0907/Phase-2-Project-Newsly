@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 const PageNotFound = () => {
   useEffect(() => {
-    window.scrollTo({ top: 20, behavior: "instant" }); // or "smooth"
+    window.scrollTo({ top: 20, behavior: "instant" });
   }, []);
   return (
     <Container
@@ -16,14 +16,13 @@ const PageNotFound = () => {
         textAlign: "center",
       }}
     >
-      {/* Responsive 404 Image */}
       <Box
         component="img"
         src={pageNotFoundImg}
         alt="404 - Page Not Found"
         sx={{
           width: {
-            xs: "100%", // Full width on small screens
+            xs: "100%",
             sm: "80%",
             md: "60%",
             lg: "50%",
@@ -33,7 +32,6 @@ const PageNotFound = () => {
         }}
       />
 
-      {/* Error Text */}
       <Typography variant="h4" color="error" gutterBottom>
         404 - Page Not Found
       </Typography>

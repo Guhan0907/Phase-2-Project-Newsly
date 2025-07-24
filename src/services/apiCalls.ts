@@ -33,11 +33,6 @@ export const fetchTimesWireNews = async () => {
   return res.data.results;
 };
 
-// export const fetchArticleById = async (id: string) => {
-//   const res = await fetchTopStories();
-//   return res.find((article: any) => article.url === id);
-// };
-
 export const fetchArticleById = async (id: string) => {
   // First: check in Top Stories
   const topStories = await fetchTopStories();

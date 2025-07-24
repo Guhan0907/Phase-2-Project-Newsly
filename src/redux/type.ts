@@ -5,14 +5,14 @@ export interface SearchState {
 }
 
 // History state
-export interface HistoryEntry {
-  articleId: string;
-  source: "top" | "wire" | "trending";
-}
+// export interface HistoryEntry {
+//   articleId: string;
+//   source: "top" | "wire" | "trending";
+// }
 
-export interface historyState {
-  history: HistoryEntry[];
-}
+// export interface historyState {
+//   history: HistoryEntry[];
+// }
 
 export interface ArticlesState {
   featured: NYTArticle | null;

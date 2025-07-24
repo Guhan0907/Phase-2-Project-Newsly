@@ -32,7 +32,7 @@ const FeaturedNewsCard = ({ article, index }: Props) => {
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        cursor: "pointer", 
+        cursor: "pointer",
         transition: "transform 0.2s",
         "&:hover": {
           transform: "scale(1.01)",

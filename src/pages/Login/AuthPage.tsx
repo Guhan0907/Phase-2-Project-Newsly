@@ -58,7 +58,7 @@ const AuthPage = () => {
     if (!/\d/.test(value)) return "Must contain a number";
     if (!/[!@#$%^&*()_+[\]{};':"\\|,.<>/?]/.test(value))
       return "Must contain a special character";
-    return ""; // No error
+    return "";
   };
 
   const handleEmailChange = (value: string) => {
