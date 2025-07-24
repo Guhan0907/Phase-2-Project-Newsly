@@ -1,5 +1,5 @@
 import { Box, Typography, Container, Button } from "@mui/material";
-import contactImg from "../../assets/contactus.jpeg"; // optional image
+import contactImg from "../../assets/contactus.jpeg";
 import { useEffect } from "react";
 
 const ContactUs = () => {

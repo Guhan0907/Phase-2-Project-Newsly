@@ -14,55 +14,22 @@ import ArticleDetail from "./pages/articlesDetail/articlesDetail";
 import Favourites from "./pages/Favourites/Favourites";
 import AuthPage from "./pages/Login/AuthPage";
 import ProtectedRoutes from "./pages/ProtectedRoutes/ProtectedRoutes";
-import Subscription from "./pages/Header/Subscription";
 import ContactUs from "./pages/Footer/ContactUs";
-
-// const theme = createTheme({
-//   palette: {
-//     primary: {
-//       main: "#BA487F",
-//     },
-//     secondary: {
-//       main: "#a8a432",
-//     },
-//     error : {
-//       main : "#cb4335",
-//     },
-//     success : {
-//         main : "#28b463"
-//     }
-//   },
-// });
+import ErrorPage from "./services/ErrorPage";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#BA487F", // Newsly's brand pink
+      main: "#BA487F",
     },
     secondary: {
-      main: "#5dade2", // Accent yellow
+      main: "#a8a432",
     },
     error: {
       main: "#cb4335",
     },
     success: {
       main: "#28b463",
-    },
-  },
-  typography: {
-    fontFamily: `'Poppins', 'Roboto', sans-serif`,
-    h4: {
-      fontWeight: 700,
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 999,
-          textTransform: "none",
-        },
-      },
     },
   },
 });
@@ -74,7 +41,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />, // Public
+        element: <HomePage />,
       },
       {
         path: "article/:id",
@@ -89,15 +56,6 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoutes>
             <Favourites />
-          </ProtectedRoutes>
-        ),
-      },
-      {
-        path: "/subs",
-        element: (
-          <ProtectedRoutes>
-            {" "}
-            <Subscription />{" "}
           </ProtectedRoutes>
         ),
       },
@@ -118,6 +76,10 @@ const router = createBrowserRouter([
         element: <PageNotFound />,
       },
     ],
+  },
+  {
+    path: "/error",
+    element: <ErrorPage />,
   },
 ]);
 

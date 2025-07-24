@@ -8,9 +8,6 @@ const initialState: ArticlesState = {
   loading: false,
   error: null,
   isSearchMode: false,
-  // searchResults: [],
-  // searchLoading: false,
-  // searchError: null,
 };
 
 const articlesReducer = (
