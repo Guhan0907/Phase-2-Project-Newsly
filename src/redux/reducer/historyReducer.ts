@@ -8,7 +8,7 @@ const initialState: string[] = [];
 
 const historyReducer = (
   state = initialState,
-  action: HistoryAction, // accept both actions
+  action: HistoryAction,
 ): string[] => {
   switch (action.type) {
     case ADD_TO_HISTORY:

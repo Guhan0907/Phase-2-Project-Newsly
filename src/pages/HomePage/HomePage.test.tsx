@@ -1,4 +1,3 @@
-// HomePage.test.tsx
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
@@ -8,7 +7,6 @@ import * as api from "../../services/apiCalls";
 import { store } from "../../redux/store";
 import { setCategoryFromFooter } from "../../redux/action/categoryAction";
 
-// Mock components
 vi.mock("../../components/FeaturedNewsCard", () => ({
   default: () => <div data-testid="featured-card">Featured Card</div>,
 }));
@@ -70,11 +68,9 @@ describe("HomePage", () => {
       </Provider>,
     );
 
-    // Wait for featured card and article list
     expect(await screen.findByTestId("featured-card")).toBeInTheDocument();
     expect(await screen.findByTestId("compact-grid")).toBeInTheDocument();
 
-    // Articles displayed
     expect(screen.getByText("Top Article 1")).toBeInTheDocument();
     expect(screen.getByText("Top Article 2")).toBeInTheDocument();
   });
@@ -93,31 +89,12 @@ describe("HomePage", () => {
       </Provider>,
     );
 
-    // Switch to trending
     fireEvent.click(await screen.findByText("Set Trending"));
 
     await waitFor(() => {
       expect(screen.getByText("Trending Article 1")).toBeInTheDocument();
     });
   });
-
-  //   it.skip("shows shimmer while loading", () => {
-  //     const loadingStore = {
-  //       ...store,
-  //       getState: () => ({ ...store.getState(), articles: { ...store.getState().articles, loading: true } }),
-  //     };
-
-  //     render(
-  //       <Provider store={loadingStore}>
-  //         <MemoryRouter>
-  //           <HomePage />
-  //         </MemoryRouter>
-  //       </Provider>
-  //     );
-
-  //     expect(screen.getByTestId("shimmer-featured")).toBeInTheDocument();
-  //     expect(screen.getByTestId("shimmer-grid")).toBeInTheDocument();
-  //   });
 
   it("applies selectedCategory from Redux and scrolls to top", async () => {
     const scrollToMock = vi
@@ -137,7 +114,6 @@ describe("HomePage", () => {
       </Provider>,
     );
 
-    // Dispatch Redux action to simulate category selection
     store.dispatch(setCategoryFromFooter("world"));
 
     await waitFor(() => {
@@ -164,10 +140,8 @@ describe("HomePage", () => {
       </Provider>,
     );
 
-    // Wait for articles to render
     expect(await screen.findByText("Article 1")).toBeInTheDocument();
 
-    // Mock scroll dimensions
     Object.defineProperty(window, "innerHeight", {
       writable: true,
       value: 1000,

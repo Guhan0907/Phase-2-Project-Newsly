@@ -1,12 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import ArticleDetailHeading from "../ArticleDetailHeading";
-// import type { NYTArticle } from "../../types/article";
 import { vi } from "vitest";
 import type { NYTArticle } from "../../../types/article";
 
-// Mock MUI's useMediaQuery to always return false (not mobile)
 vi.mock("@mui/material", async (importOriginal) => {
-  //   const actual = await importOriginal();
   const actual = (await importOriginal()) as typeof import("@mui/material");
   return {
     ...actual,

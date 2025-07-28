@@ -3,12 +3,11 @@ import { MemoryRouter, useNavigate } from "react-router-dom";
 import ErrorPage from "../ErrorPage";
 import { vi } from "vitest";
 
-// Mock useNavigate
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
-    useNavigate: vi.fn(), // <-- create a mock function
+    useNavigate: vi.fn(),
   };
 });
 

@@ -36,7 +36,7 @@ describe("historyReducer", () => {
     const newState = historyReducer(longState, action);
     expect(newState.length).toBe(20);
     expect(newState).toContain("new-item");
-    expect(newState).not.toContain("item-19"); // last item dropped
+    expect(newState).not.toContain("item-19");
   });
 
   it("should handle CLEAR_HISTORY", () => {

@@ -4,7 +4,7 @@ import {
   setUser,
   logoutUser,
   type User,
-} from "../../../redux/action/userAction"; // Adjust path if needed
+} from "../../../redux/action/userAction";
 
 import { describe, it, expect } from "vitest";
 

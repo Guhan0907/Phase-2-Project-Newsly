@@ -84,7 +84,6 @@ const Favourites = () => {
     );
   }
 
-  // Empty state
   if (noSavedArticles) {
     return (
       <Box

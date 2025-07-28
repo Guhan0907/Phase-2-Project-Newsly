@@ -31,9 +31,8 @@ describe("axiosInstance", () => {
 
     await expect(API.get("/svc/fake-error")).rejects.toThrow();
 
-    // Check redirect side effect
     expect(window.location.href).toBe("/error");
 
-    locationSpy.mockRestore(); // Clean up after test
+    locationSpy.mockRestore();
   });
 });

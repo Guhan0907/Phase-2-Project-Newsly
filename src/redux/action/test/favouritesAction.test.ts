@@ -5,7 +5,7 @@ import {
   addToFavourites,
   removeFromFavourites,
   clearFavourites,
-} from "../../../redux/action/favouritesAction"; // Adjust path as necessary
+} from "../../../redux/action/favouritesAction";
 
 import { describe, it, expect } from "vitest";
 

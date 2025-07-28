@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { categoryReducer } from "../categoryReducer"; // adjust path as needed
+import { categoryReducer } from "../categoryReducer";
 import { SET_CATEGORY_FROM_FOOTER } from "../../../redux/action/categoryAction";
 
 describe("categoryReducer", () => {

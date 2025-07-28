@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import articlesReducer from "../articleReducer"; // Update the path as needed
+import articlesReducer from "../articleReducer";
 import {
   fetchArticlesRequest,
   fetchArticlesSuccess,

@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
-// No thunk needed for these tests
 const mockStore = configureStore();
 const store = mockStore({});
 
@@ -18,7 +17,6 @@ vi.mock("react-redux", async () => {
   };
 });
 
-//  Properly mock categoryAction
 vi.mock("../../redux/action/categoryAction", async () => {
   const actual = await vi.importActual<
     typeof import("../../../redux/action/categoryAction")

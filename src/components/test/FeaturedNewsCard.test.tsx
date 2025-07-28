@@ -32,7 +32,6 @@ const sampleArticle: NYTArticle = {
       type: "image",
       subtype: "photo",
       caption: "Image caption",
-      //   copyright: "Copyright Info",
     },
   ],
   des_facet: [],

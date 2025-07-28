@@ -8,7 +8,6 @@ import * as api from "../../services/apiCalls";
 import * as favouritesActions from "../../redux/action/favouritesAction";
 import { MemoryRouter } from "react-router-dom";
 
-// Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
   const actual: any = await vi.importActual("react-router-dom");
@@ -18,7 +17,6 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Mock article
 const mockArticle = {
   id: "123",
   url: "https://example.com/test",
@@ -106,11 +104,9 @@ describe("Favourites Component", () => {
       </Provider>,
     );
 
-    // const articleCard = await screen.findByText("Test Article");
     const favButton = await screen.findByTestId("favorite-button");
     fireEvent.click(favButton);
 
-    // expect(removeSpy).toHaveBeenCalledWith("123");
     expect(removeSpy).toHaveBeenCalledWith("https://example.com/test");
   });
 

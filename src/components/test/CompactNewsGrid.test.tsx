@@ -33,7 +33,6 @@ const sampleArticles: NYTArticle[] = [
         type: "image",
         subtype: "photo",
         caption: "Image 1",
-        // copyright: "NYT",
       },
     ],
     des_facet: [],

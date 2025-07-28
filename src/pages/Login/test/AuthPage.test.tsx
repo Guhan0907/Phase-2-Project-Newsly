@@ -1,90 +1,3 @@
-// import { render, screen, fireEvent } from "@testing-library/react";
-// import AuthPage from "../AuthPage";
-// import { Provider } from "react-redux";
-// import { MemoryRouter } from "react-router-dom";
-// import configureStore from "redux-mock-store";
-
-// const mockStore = configureStore();
-
-// describe("AuthPage Component", () => {
-//   let store: any;
-
-//   beforeEach(() => {
-//     store = mockStore({
-//       user: { user: null },
-//     });
-//   });
-
-//   it("renders the form elements", () => {
-//     render(
-//       <Provider store={store}>
-//         <MemoryRouter>
-//           <AuthPage />
-//         </MemoryRouter>
-//       </Provider>,
-//     );
-
-//     expect(screen.getByLabelText(/Name/i)).toBeInTheDocument();
-//     expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-//     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-//     expect(
-//       screen.getByRole("button", { name: /Sign In \/ Sign Up/i }),
-//     ).toBeInTheDocument();
-//   });
-
-//   it("shows email validation error on incorrect input", () => {
-//     render(
-//       <Provider store={store}>
-//         <MemoryRouter>
-//           <AuthPage />
-//         </MemoryRouter>
-//       </Provider>,
-//     );
-
-//     fireEvent.change(screen.getByLabelText(/Email/i), {
-//       target: { value: "invalidemail" },
-//     });
-//     fireEvent.blur(screen.getByLabelText(/Email/i));
-
-//     expect(
-//       screen.getByText(/Please enter a valid email address/i),
-//     ).toBeInTheDocument();
-//   });
-
-//   it("dispatches setUser on valid submit", () => {
-//     render(
-//       <Provider store={store}>
-//         <MemoryRouter>
-//           <AuthPage />
-//         </MemoryRouter>
-//       </Provider>,
-//     );
-
-//     fireEvent.change(screen.getByLabelText(/Name/i), {
-//       target: { value: "John Doe" },
-//     });
-//     fireEvent.change(screen.getByLabelText(/Email/i), {
-//       target: { value: "john@example.com" },
-//     });
-//     fireEvent.change(screen.getByLabelText(/Password/i), {
-//       target: { value: "Password123!" },
-//     });
-
-//     fireEvent.click(
-//       screen.getByRole("button", { name: /Sign In \/ Sign Up/i }),
-//     );
-
-//     const actions = store.getActions();
-//     expect(actions[0].type).toBe("SET_USER");
-//     expect(actions[0].payload).toMatchObject({
-//       name: "John Doe",
-//       email: "john@example.com",
-//       password: "Password123!",
-//       imageUrl: "/assets/default-user.png",
-//     });
-//   });
-// });
-
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -94,12 +7,10 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { legacy_createStore as createStore } from "redux";
 import AuthPage from "../AuthPage";
 
-// Mock the GoogleSignIn component
 vi.mock("../GoogleSignIn", () => ({
   default: () => <div data-testid="google-signin">Google Sign In</div>,
 }));
 
-// Mock the Redux action
 vi.mock("../../../redux/action/userAction", () => ({
   setUser: (payload: any) => ({
     type: "SET_USER",
@@ -107,7 +18,6 @@ vi.mock("../../../redux/action/userAction", () => ({
   }),
 }));
 
-// Mock react-router-dom navigate
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
@@ -117,14 +27,12 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-// Mock window.alert
 const mockAlert = vi.fn();
 Object.defineProperty(window, "alert", {
   writable: true,
   value: mockAlert,
 });
 
-// Root reducer that matches your actual Redux store structure
 const rootReducer = (state = { user: { user: null } }, action: any) => {
   switch (action.type) {
     case "SET_USER":
@@ -140,12 +48,10 @@ const rootReducer = (state = { user: { user: null } }, action: any) => {
   }
 };
 
-// Create a mock store
 const createMockStore = (initialState = { user: { user: null } }) => {
   return createStore(rootReducer, initialState);
 };
 
-// Test wrapper component
 const TestWrapper = ({ children, store = createMockStore() }) => {
   const theme = createTheme();
   return (
@@ -175,7 +81,6 @@ describe("AuthPage", () => {
         </TestWrapper>,
       );
 
-      // Target the heading specifically instead of just text
       expect(
         screen.getByRole("heading", { name: /sign in \/ sign up/i }),
       ).toBeInTheDocument();
@@ -200,11 +105,9 @@ describe("AuthPage", () => {
         </TestWrapper>,
       );
 
-      // The password field should have a toggle button
       const passwordField = screen.getByLabelText(/password/i);
       expect(passwordField).toBeInTheDocument();
 
-      // Look for the visibility toggle button (it's an IconButton within the password field)
       const buttons = screen.getAllByRole("button");
       const toggleButton = buttons.find(
         (button) =>
@@ -458,7 +361,6 @@ describe("AuthPage", () => {
       );
 
       const passwordInput = screen.getByLabelText(/password/i);
-      // Find the toggle button - it should be the button that's not the submit button
       const allButtons = screen.getAllByRole("button");
       const toggleButton = allButtons.find(
         (button) =>
@@ -468,14 +370,11 @@ describe("AuthPage", () => {
 
       expect(toggleButton).toBeInTheDocument();
 
-      // Initially password should be hidden
       expect(passwordInput).toHaveAttribute("type", "password");
 
-      // Click to show password
       await user.click(toggleButton!);
       expect(passwordInput).toHaveAttribute("type", "text");
 
-      // Click to hide password again
       await user.click(toggleButton!);
       expect(passwordInput).toHaveAttribute("type", "password");
     });
@@ -493,7 +392,6 @@ describe("AuthPage", () => {
         </TestWrapper>,
       );
 
-      // Fill in valid form data
       await user.type(
         screen.getByRole("textbox", { name: /name/i }),
         "John Doe",
@@ -504,7 +402,6 @@ describe("AuthPage", () => {
       );
       await user.type(screen.getByLabelText(/password/i), "ValidPass123!");
 
-      // Submit form
       await user.click(
         screen.getByRole("button", { name: /sign in \/ sign up/i }),
       );
@@ -547,14 +444,12 @@ describe("AuthPage", () => {
         screen.getByRole("button", { name: /sign in \/ sign up/i }),
       );
 
-      // Wait for validation to occur
       await waitFor(() => {
         expect(
           screen.getByText("Please enter a valid email address"),
         ).toBeInTheDocument();
       });
 
-      // Should not have dispatched due to validation errors
       expect(dispatchSpy).not.toHaveBeenCalledWith(
         expect.objectContaining({
           type: "SET_USER",
@@ -593,7 +488,6 @@ describe("AuthPage", () => {
         ).toBeInTheDocument();
       });
 
-      // Should not have dispatched due to validation errors
       expect(dispatchSpy).not.toHaveBeenCalledWith(
         expect.objectContaining({
           type: "SET_USER",

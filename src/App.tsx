@@ -6,17 +6,13 @@ import Footer from "./pages/Footer/Footer";
 
 const App = () => {
   return (
-    // <>
     <Box minHeight="100vh" display="flex" flexDirection="column">
       <Header />
-
       <Box flexGrow={1}>
         <Outlet />
       </Box>
-
       <Footer />
     </Box>
-    // </>
   );
 };
 

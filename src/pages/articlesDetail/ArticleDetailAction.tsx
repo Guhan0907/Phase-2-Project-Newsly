@@ -41,7 +41,6 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
     try {
       await navigator.clipboard.writeText(shareUrl);
     } catch (err) {
-      // fallback
       const textArea = document.createElement("textarea");
       textArea.value = shareUrl;
       document.body.appendChild(textArea);

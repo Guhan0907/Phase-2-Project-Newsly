@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   SET_CATEGORY_FROM_FOOTER,
   setCategoryFromFooter,
-} from "../../../redux/action/categoryAction"; // adjust path based on your structure
+} from "../../../redux/action/categoryAction";
 
 describe("categoryAction", () => {
   it("should create SET_CATEGORY_FROM_FOOTER action", () => {

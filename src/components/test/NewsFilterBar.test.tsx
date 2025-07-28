@@ -94,5 +94,3 @@ describe("NewsFilterBar", () => {
     );
   });
 });
-
-// so here we have written many skipped so we have to change that and we need to make some changes according to that

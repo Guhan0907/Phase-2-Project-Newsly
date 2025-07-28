@@ -10,7 +10,6 @@ vi.mock("../useAuth", () => ({
   }),
 }));
 
-// Mock google.accounts.id
 const initializeMock = vi.fn();
 const renderButtonMock = vi.fn();
 
@@ -42,7 +41,6 @@ describe("GoogleSignIn Component", () => {
       "script[src='https://accounts.google.com/gsi/client']",
     ) as HTMLScriptElement;
 
-    // Simulate script loading
     script.onload?.({} as any);
 
     await waitFor(() => {

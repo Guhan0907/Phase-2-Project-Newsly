@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import ContactUs from "../ContactUs";
 import { vi } from "vitest";
 
-// Mock scrollTo and history.back globally
 beforeAll(() => {
   vi.spyOn(window, "scrollTo").mockImplementation(() => {});
   vi.spyOn(window.history, "back").mockImplementation(() => {});
@@ -25,7 +24,6 @@ describe("ContactUs Component", () => {
     const image = screen.getByAltText(/contact newsly/i) as HTMLImageElement;
     expect(image).toBeInTheDocument();
 
-    // Check if the src ends with the actual filename used in the component
     expect(image.src).toContain("contactus.jpeg");
   });
 

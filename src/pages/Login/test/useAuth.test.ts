@@ -3,17 +3,14 @@ import { renderHook } from "@testing-library/react";
 import { useAuth } from "../useAuth";
 import { setUser } from "../../../redux/action/userAction";
 
-// 👇 Create a mock dispatch
 const mockDispatch = vi.fn();
 
-// ✅ Mock react-redux useDispatch to always return our mockDispatch
 vi.mock("react-redux", () => ({
   useDispatch: () => mockDispatch,
 }));
 
 describe("useAuth", () => {
   beforeEach(() => {
-    // 👇 Clear previous mock call history before each test
     mockDispatch.mockClear();
   });
 
