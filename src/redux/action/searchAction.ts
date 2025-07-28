@@ -11,8 +11,6 @@ import type { Dispatch } from "redux";
 
 const API_KEY = import.meta.env.VITE_NYT_API_KEY;
 
-console.log("API KEY:", import.meta.env.VITE_NYT_API_KEY);
-
 export const searchArticles = (query: string) => {
   return async (dispatch: Dispatch<ArticlesAction>) => {
     try {

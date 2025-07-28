@@ -31,6 +31,9 @@ const Footer = () => {
   const handleCategoryClick = useCallback(
     (category: string) => {
       dispatch(setCategoryFromFooter(category));
+      if (location.pathname !== "/") {
+        navigate("/");
+      }
     },
     [dispatch],
   );
@@ -53,6 +56,7 @@ const Footer = () => {
   return (
     <Box
       component="footer"
+      data-testid="footer"
       sx={{
         mt: 4,
         px: isMobile ? 2 : 6,
@@ -68,6 +72,7 @@ const Footer = () => {
               component="img"
               src={newsly}
               alt="Newsly Logo"
+              data-testid="Newsly Logo"
               sx={{
                 width: 100,
                 height: 90,
@@ -183,6 +188,7 @@ const Footer = () => {
       >
         <Typography
           variant="body2"
+          data-testid="contact-us"
           sx={{ cursor: "pointer" }}
           onClick={handleContactUs}
         >

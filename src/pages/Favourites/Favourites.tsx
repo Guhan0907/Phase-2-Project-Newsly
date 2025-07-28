@@ -69,7 +69,7 @@ const Favourites = () => {
 
   if (loading) {
     return (
-      <Box px={{ xs: 2, sm: 4 }} py={4}>
+      <Box data-testid="favourites" px={{ xs: 2, sm: 4 }} py={4}>
         <Typography variant="h4" fontWeight={700} gutterBottom>
           Saved Articles
         </Typography>

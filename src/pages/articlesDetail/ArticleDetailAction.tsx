@@ -62,12 +62,14 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
           variant="outlined"
           startIcon={<ShareIcon />}
           onClick={handleMenuOpen}
+          data-testid="share-button"
         >
           Share
         </Button>
 
         {/* Save Button */}
         <Button
+          data-testid="save-button"
           variant={isSaved ? "contained" : "outlined"}
           color={isSaved ? "success" : "primary"}
           startIcon={

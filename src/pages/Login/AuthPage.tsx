@@ -119,6 +119,7 @@ const AuthPage = () => {
       >
         <Typography variant="h5" textAlign="center" gutterBottom>
           Sign In / Sign Up
+          {/* Sign In */}
         </Typography>
 
         <form onSubmit={handleSubmit} noValidate>
@@ -164,6 +165,7 @@ const AuthPage = () => {
 
             <Button variant="contained" color="primary" type="submit" fullWidth>
               Sign In / Sign Up
+              {/* Sign In */}
             </Button>
           </Stack>
         </form>

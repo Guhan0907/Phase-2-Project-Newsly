@@ -8,6 +8,7 @@ const PageNotFound = () => {
   }, []);
   return (
     <Container
+      data-testid="not-found"
       sx={{
         mt: 4,
         display: "flex",

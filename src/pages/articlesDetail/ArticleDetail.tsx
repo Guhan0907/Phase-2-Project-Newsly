@@ -32,7 +32,6 @@ const ArticleDetail = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useDispatch<AppDispatch>();
 
-  // Tag click logic
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<NYTArticle[]>([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
@@ -45,12 +44,9 @@ const ArticleDetail = () => {
 
     try {
       const res = await fetchTopStories();
-      console.log("res -> ", res);
-
       const articles: NYTArticle[] = Array.isArray(res)
         ? res
         : (res?.results ?? []);
-      console.log("Total articles received:", articles.length);
 
       const filtered = articles
         .filter((a) =>
@@ -72,7 +68,7 @@ const ArticleDetail = () => {
 
   if (!article) {
     return (
-      <Box p={3}>
+      <Box p={3} data-testid="article-not-found">
         <Typography variant="h6" color="error">
           Article not found.
         </Typography>
@@ -104,7 +100,6 @@ const ArticleDetail = () => {
     );
   }, [article.multimedia]);
 
-  // Track read history
   const readObserver = useReadObserver(
     useCallback(() => {
       dispatch(addToHistory(article.url));
@@ -129,12 +124,14 @@ const ArticleDetail = () => {
         fontFamily: "'Georgia', serif",
         lineHeight: 1.75,
       }}
+      data-testid="article-detail"
     >
       <ArticleDetailHeading article={article} />
 
       {mainImage && (
         <Box
           component="img"
+          data-testid="article-image"
           src={mainImage.url}
           alt={mainImage.caption || article.title}
           sx={{
@@ -149,6 +146,7 @@ const ArticleDetail = () => {
 
       {mainImage?.caption && (
         <Typography
+          data-testid="image-caption"
           variant="caption"
           color="text.secondary"
           display="block"
@@ -158,13 +156,24 @@ const ArticleDetail = () => {
         </Typography>
       )}
 
-      <Typography variant="h6" fontWeight={500} mt={2} mb={2}>
+      <Typography
+        variant="h6"
+        fontWeight={500}
+        mt={2}
+        mb={2}
+        data-testid="article-abstract"
+      >
         {article.abstract}
       </Typography>
 
       {Array.isArray(article.des_facet) && article.des_facet.length > 0 && (
         <>
-          <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+          <Typography
+            variant="subtitle2"
+            fontWeight={600}
+            gutterBottom
+            data-testid="related-topics-title"
+          >
             Related Topics:
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap" mb={3}>
@@ -172,6 +181,7 @@ const ArticleDetail = () => {
               <Chip
                 key={i}
                 label={tag}
+                data-testid={`tag-chip-${tag}`}
                 variant="outlined"
                 onClick={() => handleTagClick(tag)}
                 clickable
@@ -191,28 +201,34 @@ const ArticleDetail = () => {
 
       <Divider sx={{ my: 3 }} />
 
-      {/* Related articles based on tag */}
       {selectedTag && (
         <Box mt={3}>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" gutterBottom data-testid="related-title">
             Articles related to "{selectedTag}"
           </Typography>
 
           {loadingRelated && (
-            <Typography color="text.secondary">Loading...</Typography>
+            <Typography color="text.secondary" data-testid="loading-message">
+              Loading...
+            </Typography>
           )}
           {errorRelated && (
-            <Typography color="error">{errorRelated}</Typography>
+            <Typography color="error" data-testid="error-message">
+              {errorRelated}
+            </Typography>
           )}
 
           {!loadingRelated && relatedArticles.length === 0 && (
-            <Typography>No related articles found.</Typography>
+            <Typography data-testid="no-related">
+              No related articles found.
+            </Typography>
           )}
 
           <Stack spacing={2} mt={2}>
             {relatedArticles.map((article, idx) => (
               <Box
                 key={idx}
+                data-testid={`related-article-${idx}`}
                 sx={{
                   border: `1px solid ${theme.palette.divider}`,
                   borderRadius: 2,

@@ -10,7 +10,7 @@ import { store } from "./redux/store";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ErrorBoundary from "./pages/ErrorBoundary/ErrorBoundary";
-import ArticleDetail from "./pages/articlesDetail/articlesDetail";
+import ArticleDetail from "./pages/articlesDetail/ArticleDetail";
 import Favourites from "./pages/Favourites/Favourites";
 import AuthPage from "./pages/Login/AuthPage";
 import ProtectedRoutes from "./pages/ProtectedRoutes/ProtectedRoutes";
@@ -34,7 +34,7 @@ const theme = createTheme({
   },
 });
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
