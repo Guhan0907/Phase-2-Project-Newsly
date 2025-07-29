@@ -2,6 +2,7 @@ import API from "./axiosInstance";
 
 export const fetchTopStories = async (section = "home") => {
   const res = await API.get(`/svc/topstories/v2/${section}.json`);
+  // normally the api s called with the home in the section as default
   return res.data.results;
 };
 

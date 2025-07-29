@@ -10,8 +10,8 @@ declare global {
 const GoogleSignIn = () => {
   const { login } = useAuth();
 
-  const GOOGLE_CLIENT_ID =
-    "546399378040-d9fn58j3dkqgtbl34skrj8blghkodqnj.apps.googleusercontent.com";
+  const GOOGLE_CLIENT_ID = "546399378040-d9fn58j3dkqgtbl34skrj8blghkodqnj.apps.googleusercontent.com";
+    // const GOOGLE_CLIENT_ID = import.meta.env.GOOGLE_CLIENT_ID_KEY
 
   useEffect(() => {
     const script = document.createElement("script");

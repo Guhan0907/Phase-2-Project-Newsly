@@ -49,7 +49,10 @@ const ArticleDetail = () => {
 
   useEffect(() => {
     const fetchArticleById = async () => {
-      if (state?.article) return;
+
+      if (state?.article) 
+           return;
+
 
       setLoadingArticle(true);
       setFetchError(null);
@@ -129,8 +132,11 @@ const ArticleDetail = () => {
 
     try {
       const res = await fetchTopStories();
+      // console.log("Res value -> ",res);
+      
       const articles: NYTArticle[] = Array.isArray(res)
         ? res
+
         : (res?.results ?? []);
 
       const filtered = articles
@@ -295,7 +301,7 @@ const ArticleDetail = () => {
                   key={idx}
                   component="a"
                   href={`/article/${encodedUrl}`}
-                  target="_blank"
+                  // target="_blank"
                   rel="noopener noreferrer"
                   data-testid={`related-article-${idx}`}
                   sx={{
@@ -330,3 +336,5 @@ const ArticleDetail = () => {
 };
 
 export default ArticleDetail;
+
+

@@ -24,7 +24,7 @@ import {
   fetchArticlesFailure,
   fetchFeaturedSuccess,
 } from "../../redux/action/articlesAction";
-import { fetchTopStories, fetchTrendingStories } from "../../services/apiCalls";
+import { fetchTimesWireNews, fetchTopStories, fetchTrendingStories } from "../../services/apiCalls";
 import type { AppDispatch, RootState } from "../../redux/store";
 
 // Lazy-loaded components
@@ -55,8 +55,6 @@ const HomePage = () => {
     category: "",
     section: "",
     date: "",
-    year: new Date().getFullYear().toString(),
-    month: (new Date().getMonth() + 1).toString(),
   });
 
   const [page, setPage] = useState(1); // For infinite scroll
@@ -65,51 +63,75 @@ const HomePage = () => {
   useEffect(() => {
     const loadArticlesByType = async () => {
       try {
-        dispatch(fetchArticlesRequest());
+        // dispatch(fetchArticlesRequest());
 
         if (storyType === "top") {
-          const topStories = await fetchTopStories(filters.section || "home");
-          dispatch(fetchFeaturedSuccess(topStories[0]));
+          const topStories = await fetchTopStories(filters.section || "home"); // for the section part data is send here
+          const timeWireNews = await fetchTimesWireNews();
+          dispatch(fetchFeaturedSuccess(timeWireNews[0])); 
           dispatch(fetchArticlesSuccess(topStories));
         } else if (storyType === "trending") {
+
           const trendingStories = await fetchTrendingStories();
-          dispatch(fetchFeaturedSuccess(trendingStories[0]));
+          const timeWireNews = await fetchTimesWireNews();
+          dispatch(fetchFeaturedSuccess(timeWireNews[0])); 
           dispatch(fetchArticlesSuccess(trendingStories));
         }
 
-        setPage(1);
+        setPage(1); // for the pagination part
       } catch (error) {
         dispatch(fetchArticlesFailure("Failed to load articles"));
       }
     };
 
-    loadArticlesByType();
-  }, [storyType, filters.section, filters.year, filters.month, dispatch]);
+    loadArticlesByType(); // inside the useEffect i cannot use the await or pass the async so it is called in a manner of function
+  }, [storyType, filters.section,  dispatch]);
 
-  useEffect(() => {
-    if (storyType === "trending") {
-      setFilters((prev) => ({ ...prev, section: "", year: "", month: "" }));
-    } else if (storyType === "archived") {
-      setFilters((prev) => ({
-        ...prev,
-        section: "",
-        year: prev.year || new Date().getFullYear().toString(),
-        month: prev.month || (new Date().getMonth() + 1).toString(),
-      }));
-    } else if (storyType === "top") {
-      setFilters((prev) => ({ ...prev, year: "", month: "" }));
+// this is the extra useEffect 
+//   useEffect(() => {
+//     if (storyType === "trending") {
+//       setFilters((prev) => ({ ...prev, section: "", year: "", month: "" }));
+//     } else if (storyType === "archived") {
+//       setFilters((prev) => ({
+//         ...prev,
+//         section: "",
+//         year: prev.year || new Date().getFullYear().toString(),
+//         month: prev.month || (new Date().getMonth() + 1).toString(),
+//       }));
+//     } else if (storyType === "top") {
+//       setFilters((prev) => ({ ...prev, year: "", month: "" }));
+//     }
+//   }, [storyType]);
+
+
+  // const filteredArticles = useMemo(() => {
+  //   return (filtered ?? []).filter((article) => {
+  //     const matchesSection = filters.section
+  //       ? article.section?.toLowerCase().trim() ===
+  //         filters.section.toLowerCase().trim()
+  //       : true;
+  //     return matchesSection;
+  //   });
+  // }, [filtered, filters]);
+
+
+  // Get only the articles that match the selected section
+const filteredArticles = useMemo(() => {
+  const allArticles = filtered || [];
+
+  return allArticles.filter((article) => {
+    // If section is selected, only show matching articles
+    if (filters.section) {
+      const articleSection = article.section?.toLowerCase().trim();
+      const selectedSection = filters.section.toLowerCase().trim();
+      return articleSection === selectedSection;
     }
-  }, [storyType]);
 
-  const filteredArticles = useMemo(() => {
-    return (filtered ?? []).filter((article) => {
-      const matchesSection = filters.section
-        ? article.section?.toLowerCase().trim() ===
-          filters.section.toLowerCase().trim()
-        : true;
-      return matchesSection;
-    });
-  }, [filtered, filters]);
+    // If no section selected, include all
+    return true;
+  });
+}, [filtered, filters]);
+
 
   const isReadMemo = useCallback(
     (url: string) => readHistory.includes(url),

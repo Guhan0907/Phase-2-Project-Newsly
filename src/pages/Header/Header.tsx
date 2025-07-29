@@ -84,6 +84,7 @@ const Header = () => {
     navigate("/auth");
   };
 
+// this is in header part for the another one API call getting called there..............
   useEffect(() => {
     if (!isLogged) return;
     const trimmed = debouncedQuery.trim();
