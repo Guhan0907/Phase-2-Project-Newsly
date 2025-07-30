@@ -32,7 +32,7 @@ describe("AllItemsCard", () => {
       screen.getByText("Test article abstract content."),
     ).toBeInTheDocument();
     expect(screen.getByText("By John Doe")).toBeInTheDocument();
-    expect(screen.getByText("7/1/2024")).toBeInTheDocument(); // Adjust depending on locale
+    expect(screen.getByText("7/1/2024")).toBeInTheDocument(); 
   });
 
   it("renders article image", () => {
@@ -64,6 +64,7 @@ describe("AllItemsCard", () => {
 
   it("renders favorite button and triggers onFavoriteClick when clicked", () => {
     const onFavClick = vi.fn();
+    console.log("t------",vi.fn())
     render(
       <AllItemsCard
         article={mockArticle}

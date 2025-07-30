@@ -1,3 +1,4 @@
+
 import {
   Container,
   Typography,
@@ -19,15 +20,12 @@ import {
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchArticlesRequest,
   fetchArticlesSuccess,
-  fetchArticlesFailure,
   fetchFeaturedSuccess,
 } from "../../redux/action/articlesAction";
 import { fetchTimesWireNews, fetchTopStories, fetchTrendingStories } from "../../services/apiCalls";
 import type { AppDispatch, RootState } from "../../redux/store";
 
-// Lazy-loaded components
 const FeaturedNewsCard = lazy(
   () => import("../../components/FeaturedNewsCard"),
 );
@@ -54,7 +52,6 @@ const HomePage = () => {
   const [filters, setFilters] = useState({
     category: "",
     section: "",
-    date: "",
   });
 
   const [page, setPage] = useState(1); // For infinite scroll
@@ -80,39 +77,14 @@ const HomePage = () => {
 
         setPage(1); // for the pagination part
       } catch (error) {
-        dispatch(fetchArticlesFailure("Failed to load articles"));
+        console.error("Error occured" , error)
+        // dispatch(fetchArticlesFailure("Failed to load articles"));
       }
     };
 
     loadArticlesByType(); // inside the useEffect i cannot use the await or pass the async so it is called in a manner of function
   }, [storyType, filters.section,  dispatch]);
 
-// this is the extra useEffect 
-//   useEffect(() => {
-//     if (storyType === "trending") {
-//       setFilters((prev) => ({ ...prev, section: "", year: "", month: "" }));
-//     } else if (storyType === "archived") {
-//       setFilters((prev) => ({
-//         ...prev,
-//         section: "",
-//         year: prev.year || new Date().getFullYear().toString(),
-//         month: prev.month || (new Date().getMonth() + 1).toString(),
-//       }));
-//     } else if (storyType === "top") {
-//       setFilters((prev) => ({ ...prev, year: "", month: "" }));
-//     }
-//   }, [storyType]);
-
-
-  // const filteredArticles = useMemo(() => {
-  //   return (filtered ?? []).filter((article) => {
-  //     const matchesSection = filters.section
-  //       ? article.section?.toLowerCase().trim() ===
-  //         filters.section.toLowerCase().trim()
-  //       : true;
-  //     return matchesSection;
-  //   });
-  // }, [filtered, filters]);
 
 
   // Get only the articles that match the selected section
@@ -126,7 +98,6 @@ const filteredArticles = useMemo(() => {
       const selectedSection = filters.section.toLowerCase().trim();
       return articleSection === selectedSection;
     }
-
     // If no section selected, include all
     return true;
   });
@@ -166,9 +137,11 @@ const filteredArticles = useMemo(() => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const bottom =
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+      const bottom = 
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100; // this is used to fetch when the users came near lastArticle
       const atTop = window.scrollY > 300;
+      // console.log("pages - ",page);
+      
 
       if (bottom && page * 10 < articlesWithReadStatus.length) {
         setPage((prev) => prev + 1);
@@ -223,12 +196,10 @@ const filteredArticles = useMemo(() => {
       </Suspense>
 
       {/* Title */}
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" marginBottom={2}>
         {storyType === "top"
-          ? "Top Stories"
-          : storyType === "trending"
-            ? "Trending Stories"
-            : "Archived Stories (July 2024)"}
+          ? "Top Stories" :
+             "Trending Stories"}
       </Typography>
 
       {/* Articles Grid */}

@@ -1,59 +1,70 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter, useNavigate } from "react-router-dom";
 import ContactUs from "../ContactUs";
-import { vi } from "vitest";
 
-beforeAll(() => {
-  vi.spyOn(window, "scrollTo").mockImplementation(() => {});
-  vi.spyOn(window.history, "back").mockImplementation(() => {});
-});
+vi.mock("../../assets/contactus.jpeg", () => ({
+  default: "mocked-contact-img.jpg",
+}));
 
-afterEach(() => {
-  vi.clearAllMocks();
+// Mock scrollTo to prevent errors in test environment
+window.scrollTo = vi.fn();
+
+// Optional: Spy on navigate to test back button
+vi.mock("react-router-dom", async () => {
+  const actual: any = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+  };
 });
 
 describe("ContactUs Component", () => {
-  it("renders heading and image", () => {
-    render(<ContactUs />);
+  const navigateMock = vi.fn();
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    (useNavigate as unknown as vi.Mock).mockReturnValue(navigateMock);
+  });
+
+  it("renders contact image, headings and paragraphs", () => {
+    render(
+      <MemoryRouter>
+        <ContactUs />
+      </MemoryRouter>
+    );
+
+    expect(
+      screen.getByRole("img", { name: /contact newsly/i })
+    ).toBeInTheDocument();
 
     expect(
       screen.getByRole("heading", {
         name: /we're still building this newsroom/i,
-      }),
-    ).toBeInTheDocument();
-
-    const image = screen.getByAltText(/contact newsly/i) as HTMLImageElement;
-    expect(image).toBeInTheDocument();
-
-    expect(image.src).toContain("contactus.jpeg");
-  });
-
-  it("renders description texts", () => {
-    render(<ContactUs />);
-
-    expect(
-      screen.getByText(/our contact desk is currently under development/i),
+      })
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText(/sit tight — our editorial team will be in touch soon/i),
+      screen.getByText(
+        /thank you for your interest in reaching out/i
+      )
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/sit tight — our editorial team/i)
     ).toBeInTheDocument();
   });
 
-  it("calls history.back when Back to News button is clicked", () => {
-    render(<ContactUs />);
+  it("calls navigate(-1) when 'Back to News' button is clicked", () => {
+    render(
+      <MemoryRouter>
+        <ContactUs />
+      </MemoryRouter>
+    );
 
-    const button = screen.getByRole("button", { name: /back to news/i });
-    fireEvent.click(button);
+    const backButton = screen.getByRole("button", { name: /back to news/i });
+    backButton.click();
 
-    expect(window.history.back).toHaveBeenCalledTimes(1);
-  });
-
-  it("scrolls to top on mount", () => {
-    render(<ContactUs />);
-
-    expect(window.scrollTo).toHaveBeenCalledWith({
-      top: 0,
-      behavior: "instant",
-    });
+    expect(navigateMock).toHaveBeenCalledWith(-1);
   });
 });

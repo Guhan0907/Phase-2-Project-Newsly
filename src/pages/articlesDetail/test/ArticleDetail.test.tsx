@@ -10,11 +10,13 @@ import type { NYTArticle } from "../../../types/article";
 
 vi.mock("../../../services/apiCalls", () => ({
   fetchTopStories: vi.fn(),
+  // mocking the fetchTopStories
 }));
 
 const mockUseMediaQuery = vi.fn();
 
 vi.mock("@mui/material", async () => {
+  // mocking the entire mui package
   const actual = await vi.importActual("@mui/material");
   return {
     ...actual,
@@ -231,46 +233,10 @@ describe("ArticleDetail", () => {
   });
 
   describe("Article Display", () => {
-    it.skip("should render article when passed via location state", () => {
-      mockUseLocation.mockReturnValue({
-        state: { article: mockArticle },
-      });
+   
 
-      renderWithProviders(<ArticleDetail />);
 
-      expect(screen.getByTestId("article-detail")).toBeInTheDocument();
-      expect(screen.getByTestId("article-detail-heading")).toBeInTheDocument();
-      expect(screen.getByText("Test Article Title")).toBeInTheDocument();
-      expect(screen.getByTestId("article-abstract")).toHaveTextContent(
-        "This is a test article abstract",
-      );
-    });
-
-    it.skip("should render article when found by numeric ID", async () => {
-      mockUseParams.mockReturnValue({ id: "0" });
-      const store = createMockStore();
-
-      renderWithProviders(<ArticleDetail />, { store });
-
-      await waitFor(() => {
-        expect(screen.getByTestId("article-detail")).toBeInTheDocument();
-      });
-
-      expect(screen.getByText("Test Article Title")).toBeInTheDocument();
-    });
-
-    it.skip("should render article when found by encoded URL", async () => {
-      const encodedUrl = encodeURIComponent(mockArticle.url);
-      mockUseParams.mockReturnValue({ id: encodedUrl });
-
-      renderWithProviders(<ArticleDetail />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("article-detail")).toBeInTheDocument();
-      });
-
-      expect(screen.getByText("Test Article Title")).toBeInTheDocument();
-    });
+  
 
     it("should display main image with superJumbo format", () => {
       mockUseLocation.mockReturnValue({
@@ -381,43 +347,9 @@ describe("ArticleDetail", () => {
       expect(screen.getByTestId("save-button")).toHaveTextContent("Unsave");
     });
 
-    it.skip("should dispatch save action when save button is clicked", () => {
-      mockUseLocation.mockReturnValue({
-        state: { article: mockArticle },
-      });
-      const store = createMockStore();
-      const dispatchSpy = vi.spyOn(store, "dispatch");
 
-      renderWithProviders(<ArticleDetail />, { store });
 
-      fireEvent.click(screen.getByTestId("save-button"));
-
-      expect(mockAddToFavourites).toHaveBeenCalledWith(mockArticle.url);
-      expect(dispatchSpy).toHaveBeenCalledWith({
-        type: "ADD_TO_FAVOURITES",
-        payload: mockArticle.url,
-      });
-    });
-
-    it.skip("should dispatch remove action when unsave button is clicked", () => {
-      mockUseLocation.mockReturnValue({
-        state: { article: mockArticle },
-      });
-      const store = createMockStore({
-        favourites: [mockArticle.url],
-      });
-      const dispatchSpy = vi.spyOn(store, "dispatch");
-
-      renderWithProviders(<ArticleDetail />, { store });
-
-      fireEvent.click(screen.getByTestId("save-button"));
-
-      expect(mockRemoveFromFavourites).toHaveBeenCalledWith(mockArticle.url);
-      expect(dispatchSpy).toHaveBeenCalledWith({
-        type: "REMOVE_FROM_FAVOURITES",
-        payload: mockArticle.url,
-      });
-    });
+   
   });
 
   describe("Related Articles", () => {

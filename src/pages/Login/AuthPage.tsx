@@ -44,6 +44,7 @@ const AuthPage = () => {
   const [passwordError, setPasswordError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
+
   const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
 
   const validateEmail = (value: string): boolean => {
@@ -51,7 +52,7 @@ const AuthPage = () => {
     return regex.test(value);
   };
 
-  const validatePasswordWithFeedback = (value: string): string => {
+  const validatePassword = (value: string): string => {
     if (value.length < 8) return "At least 8 characters required";
     if (!/[A-Z]/.test(value)) return "Must contain an uppercase letter";
     if (!/[a-z]/.test(value)) return "Must contain a lowercase letter";
@@ -72,7 +73,7 @@ const AuthPage = () => {
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
-    const error = validatePasswordWithFeedback(value);
+    const error = validatePassword(value);
     setPasswordError(error);
   };
 
@@ -80,7 +81,7 @@ const AuthPage = () => {
     e.preventDefault();
 
     const isEmailValid = validateEmail(email);
-    const passwordFeedback = validatePasswordWithFeedback(password);
+    const passwordFeedback = validatePassword(password);
     const isNameValid = name.trim() !== "";
 
     if (!isEmailValid) setEmailError("Please enter a valid email address");

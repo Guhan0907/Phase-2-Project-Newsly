@@ -33,38 +33,23 @@ export interface setSearchModeAction {
 }
 
 // data
-export const fetchArticlesRequest = (): fetchArticlesRequestAction => ({
-  type: "FETCH_ARTICLES_REQUEST",
-});
+
 export const fetchArticlesSuccess = (
   data: NYTArticle[],
 ): fetchArticlesSuccessAction => ({
   type: "FETCH_ARTICLES_SUCCESS",
   payload: data,
 });
-export const fetchArticlesFailure = (
-  error: string,
-): fetchArticlesFailureAction => ({
-  type: "FETCH_ARTICLES_FAILURE",
-  payload: error,
-});
+
 
 export const fetchFeaturedSuccess = (
   article: NYTArticle,
 ): fetchFeaturedSuccessAction => ({
-  type: "FETCH_FEATURED_SUCCESS",
+  type: "FETCH_FEATURED_SUCCESS", 
   payload: article,
 });
 
-export const setQuery = (query: string): setQueryAction => ({
-  type: "SET_QUERY",
-  payload: query,
-});
 
-export const setSearchMode = (isSearch: boolean): setSearchModeAction => ({
-  type: SET_SEARCH_MODE,
-  payload: isSearch,
-});
 // for the whole export
 export type ArticlesAction =
   | fetchArticlesRequestAction

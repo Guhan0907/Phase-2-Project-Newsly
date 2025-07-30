@@ -15,7 +15,6 @@ import type { UserAction } from "./action/userAction";
 import type { CategoryAction } from "./action/categoryAction";
 import type { SavedArticlesAction } from "./action/savedArticleAction";
 import savedArticlesReducer from "./reducer/savedArticleReducer";
-// import 
 
 export type AppActions =
   | ArticlesAction

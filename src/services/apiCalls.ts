@@ -1,4 +1,12 @@
-import API from "./axiosInstance";
+import axios from "axios";
+
+export const API = axios.create({
+  baseURL: "https://api.nytimes.com",
+  timeout: 8000,
+  params: {
+    "api-key": import.meta.env.VITE_NYT_API_KEY,
+  },
+});
 
 export const fetchTopStories = async (section = "home") => {
   const res = await API.get(`/svc/topstories/v2/${section}.json`);
@@ -11,10 +19,7 @@ export const fetchTrendingStories = async () => {
   return res.data.results;
 };
 
-export const fetchArchivedStories = async (year: number, month: number) => {
-  const res = await API.get(`/svc/archive/v1/${year}/${month}.json`);
-  return res.data.response.docs;
-};
+
 
 export const fetchTimesWireNews = async () => {
   const res = await API.get(`/svc/news/v3/content/all/all.json`);
@@ -38,4 +43,18 @@ export const fetchArticleById = async (id: string) => {
 export const fetchTopStoriesBySection = async (section: string) => {
   const res = await API.get(`/svc/topstories/v2/${section}.json`);
   return res.data.results;
+};
+
+
+// for searching
+export const searchArticlesByQuery = async (query: string) => {
+  const res = await API.get(`/svc/search/v2/articlesearch.json?q=${query}`);
+
+  const docs = res.data?.response?.docs;
+
+  if (!Array.isArray(docs)) {
+    throw new Error("Unexpected API response structure");
+  }
+
+  return docs;
 };

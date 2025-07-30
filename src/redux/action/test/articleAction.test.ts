@@ -5,12 +5,12 @@ import {
   FETCH_FEATURED_SUCCESS,
   SET_QUERY,
   SET_SEARCH_MODE,
-  fetchArticlesRequest,
+  // fetchArticlesRequest,
   fetchArticlesSuccess,
-  fetchArticlesFailure,
+  // fetchArticlesFailure,
   fetchFeaturedSuccess,
-  setQuery,
-  setSearchMode,
+  // setQuery,
+  // setSearchMode,
 } from "../../../redux/action/articlesAction";
 
 import type { NYTArticle } from "../../../types/article";
@@ -29,9 +29,6 @@ describe("articlesAction", () => {
     isRead: false,
   };
 
-  it("should create FETCH_ARTICLES_REQUEST action", () => {
-    expect(fetchArticlesRequest()).toEqual({ type: FETCH_ARTICLES_REQUEST });
-  });
 
   it("should create FETCH_ARTICLES_SUCCESS action", () => {
     const articles = [mockArticle];
@@ -41,14 +38,7 @@ describe("articlesAction", () => {
     });
   });
 
-  it("should create FETCH_ARTICLES_FAILURE action", () => {
-    const error = "Something went wrong";
-    expect(fetchArticlesFailure(error)).toEqual({
-      type: FETCH_ARTICLES_FAILURE,
-      payload: error,
-    });
-  });
-
+  
   it("should create FETCH_FEATURED_SUCCESS action", () => {
     expect(fetchFeaturedSuccess(mockArticle)).toEqual({
       type: FETCH_FEATURED_SUCCESS,
@@ -56,23 +46,5 @@ describe("articlesAction", () => {
     });
   });
 
-  it("should create SET_QUERY action", () => {
-    const query = "technology";
-    expect(setQuery(query)).toEqual({
-      type: SET_QUERY,
-      payload: query,
-    });
-  });
-
-  it("should create SET_SEARCH_MODE action", () => {
-    expect(setSearchMode(true)).toEqual({
-      type: SET_SEARCH_MODE,
-      payload: true,
-    });
-
-    expect(setSearchMode(false)).toEqual({
-      type: SET_SEARCH_MODE,
-      payload: false,
-    });
-  });
+  
 });

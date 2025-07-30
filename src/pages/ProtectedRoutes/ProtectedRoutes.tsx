@@ -13,7 +13,7 @@ const ProtectedRoutes = ({ children }: ProtectedRoutesProps) => {
     typeof rawUser === "string" ? JSON.parse(rawUser).user : rawUser;
 
   if (!parsedUser || !parsedUser.email) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/auth" replace />; // without this replace the browserRouter try to go to the protected routes page
   }
 
   return <>{children}</>;

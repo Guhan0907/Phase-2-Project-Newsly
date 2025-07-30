@@ -9,7 +9,8 @@ export const useReadObserver = (onRead: Callback) => {
     if (!ref.current) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        const entry = entries[0];
         if (entry.isIntersecting) {
           onRead(); // fire callback
           observer.disconnect(); // disconnect to avoid repeated calls
@@ -20,7 +21,7 @@ export const useReadObserver = (onRead: Callback) => {
       },
     );
 
-    observer.observe(ref.current);
+    observer.observe(ref.current); // browset will watch that element
 
     return () => {
       observer.disconnect();

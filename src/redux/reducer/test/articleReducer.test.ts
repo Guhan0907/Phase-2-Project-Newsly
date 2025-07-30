@@ -1,12 +1,8 @@
 import { describe, it, expect } from "vitest";
 import articlesReducer from "../articleReducer";
 import {
-  fetchArticlesRequest,
   fetchArticlesSuccess,
-  fetchArticlesFailure,
   fetchFeaturedSuccess,
-  setQuery,
-  setSearchMode,
 } from "../../../redux/action/articlesAction";
 import type { NYTArticle } from "../../../types/article";
 import type { ArticlesState } from "../../type";
@@ -36,12 +32,7 @@ const initialState: ArticlesState = {
 };
 
 describe("articlesReducer", () => {
-  it("handles FETCH_ARTICLES_REQUEST", () => {
-    const newState = articlesReducer(initialState, fetchArticlesRequest());
-    expect(newState.loading).toBe(true);
-    expect(newState.error).toBeNull();
-  });
-
+  
   it("handles FETCH_ARTICLES_SUCCESS", () => {
     const newState = articlesReducer(
       initialState,
@@ -52,15 +43,7 @@ describe("articlesReducer", () => {
     expect(newState.filtered).toEqual(mockArticles);
   });
 
-  it("handles FETCH_ARTICLES_FAILURE", () => {
-    const errorMsg = "Failed to fetch";
-    const newState = articlesReducer(
-      initialState,
-      fetchArticlesFailure(errorMsg),
-    );
-    expect(newState.loading).toBe(false);
-    expect(newState.error).toBe(errorMsg);
-  });
+ 
 
   it("handles FETCH_FEATURED_SUCCESS", () => {
     const featured = mockArticles[0];
@@ -71,21 +54,7 @@ describe("articlesReducer", () => {
     expect(newState.featured).toEqual(featured);
   });
 
-  it("handles SET_QUERY", () => {
-    const stateWithArticles = {
-      ...initialState,
-      topStories: mockArticles,
-    };
-
-    const newState = articlesReducer(stateWithArticles, setQuery("breaking"));
-    expect(newState.query).toBe("breaking");
-    expect(newState.filtered.length).toBe(1);
-  });
-
-  it("handles SET_SEARCH_MODE", () => {
-    const newState = articlesReducer(initialState, setSearchMode(true));
-    expect(newState.isSearchMode).toBe(true);
-  });
+  
 
   it("returns current state by default", () => {
     const unknownAction = { type: "UNKNOWN_ACTION" } as any;

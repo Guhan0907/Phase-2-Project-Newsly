@@ -13,11 +13,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchArticlesFailure,
-  fetchArticlesRequest,
   fetchArticlesSuccess,
   fetchFeaturedSuccess,
-  setSearchMode,
 } from "../../redux/action/articlesAction";
 import { searchArticles } from "../../redux/action/searchAction";
 import { logoutUser } from "../../redux/action/userAction";
@@ -48,29 +45,29 @@ const Header = () => {
   const rawUser = useSelector((state: RootState) => state.user.user);
   const parsedUser =
     typeof rawUser === "string" ? JSON.parse(rawUser)?.user : rawUser;
-  const isLogged = !!parsedUser?.email;
+  const isLogged = parsedUser?.email;
 
   const [query, setQueryInput] = useState("");
   const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
   const debouncedQuery = useDebounce(query, 1000);
 
   const fetchDefaultArticles = () => {
-    dispatch(setSearchMode(false));
-    dispatch(fetchArticlesRequest());
 
     Promise.all([fetchTopStories(), fetchTimesWireNews()])
       .then(([topStories, featured]) => {
         dispatch(fetchArticlesSuccess(topStories));
         dispatch(fetchFeaturedSuccess(featured[0]));
       })
-      .catch(() => {
-        dispatch(fetchArticlesFailure("Failed to load articles."));
+      .catch((error) => {
+        console.error("Error while fetching the details" , error)
       });
   };
 
   const handleSearch = () => {
     const trimmed = query.trim();
+    console.log(" Trimmed ",trimmed)
     if (!trimmed) {
+      // called when the user enter only blank
       fetchDefaultArticles();
     } else {
       dispatch(searchArticles(trimmed));
@@ -94,14 +91,14 @@ const Header = () => {
     } else {
       dispatch(searchArticles(trimmed));
     }
-  }, [debouncedQuery, isLogged]);
+  }, [debouncedQuery]);
 
   return (
     <>
       <AppBar position="sticky" color="default" elevation={1}>
         <Container maxWidth="xl">
           <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-            {/* Logo + Back Button */}
+            {/* Logo  Back Button */}
             <Box display="flex" alignItems="center">
               {showBackButton && (
                 <IconButton onClick={() => navigate(-1)} sx={{ mr: 1 }}>
@@ -135,7 +132,7 @@ const Header = () => {
                 </Suspense>
               )}
 
-            {/* Right Section: Favourites + User */}
+            {/*  Favourites + User */}
             <Box display="flex" alignItems="center" gap={isMobile ? 0.5 : 1}>
               <IconButton
                 onClick={() => navigate("/favourites")}

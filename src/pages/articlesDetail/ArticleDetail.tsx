@@ -1,3 +1,4 @@
+
 import {
   Box,
   Typography,
@@ -25,7 +26,7 @@ import ArticleDetailHeading from "./ArticleDetailHeading";
 import { useReadObserver } from "../../hooks/readObserverHook";
 
 const ArticleDetail = () => {
-  const { state } = useLocation();
+  const { state } = useLocation(); // data passed via props is got here
   const { id } = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -33,15 +34,16 @@ const ArticleDetail = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const topStories = useSelector(
-    (state: RootState) => state.articles.topStories,
+    (state: RootState) => state.articles.topStories, //  used for searching purpose 
   );
 
   const [article, setArticle] = useState<NYTArticle | null>(
-    state?.article || null,
+    state?.article || null,  
   );
   const [loadingArticle, setLoadingArticle] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
+  // used for the chips in related topic
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<NYTArticle[]>([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
@@ -50,12 +52,11 @@ const ArticleDetail = () => {
   useEffect(() => {
     const fetchArticleById = async () => {
 
-      if (state?.article) 
+      if (state?.article)  // if the data send by props
            return;
 
 
       setLoadingArticle(true);
-      setFetchError(null);
 
       try {
         let stories = topStories;
@@ -105,57 +106,64 @@ const ArticleDetail = () => {
 
   const mainImage = useMemo(() => {
     return (
-      article?.multimedia?.find((m) => m.format === "superJumbo") ??
       article?.multimedia?.[0]
     );
   }, [article]);
 
-  const readObserver = useReadObserver(
-    useCallback(() => {
-      if (article) dispatch(addToHistory(article.url));
-    }, [dispatch, article]),
-  );
 
-  const handleSave = useCallback(() => {
+  const readObserver = useReadObserver(() => {
+  if (article) {
+    dispatch(addToHistory(article.url));
+  }
+});
+
+
+  const handleSave = useCallback(() => { // save option
     if (!article) return;
     if (isSaved) {
       dispatch(removeFromFavourites(article.url));
     } else {
       dispatch(addToFavourites(article.url));
     }
-  }, [dispatch, isSaved, article]);
-
-  const handleTagClick = useCallback(async (tag: string) => {
+  }, [ isSaved, article]);
+  
+  // for handling the chips that are used
+  const handleTagClick = async (tag: string) => { 
     setSelectedTag(tag);
     setLoadingRelated(true);
-    setErrorRelated(null);
+    // setErrorRelated(null);
 
     try {
-      const res = await fetchTopStories();
-      // console.log("Res value -> ",res);
       
-      const articles: NYTArticle[] = Array.isArray(res)
-        ? res
+      const articles: NYTArticle[] = await fetchTopStories();
 
-        : (res?.results ?? []);
 
-      const filtered = articles
-        .filter((a) =>
-          a.des_facet?.some((facet) =>
-            facet.toLowerCase().includes(tag.toLowerCase()),
-          ),
-        )
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 6);
+      const filtered: NYTArticle[] = [];
 
-      setRelatedArticles(filtered);
+for (const art of articles) {
+  if (!art.des_facet) continue;
+
+  for (const facet of art.des_facet) {
+    if (facet.toLowerCase().includes(tag.toLowerCase())) {
+      filtered.push(art);
+      break; 
+    }
+  }
+}
+const shuffled = filtered.sort(() => Math.random() - 0.5);
+
+const finalArticles = shuffled.slice(0, 6);
+
+setRelatedArticles(finalArticles);
+
+
     } catch (err) {
       console.error(err);
       setErrorRelated("Failed to load related articles.");
     } finally {
       setLoadingRelated(false);
     }
-  }, []);
+  };
 
   if (loadingArticle) {
     return (
@@ -252,7 +260,7 @@ const ArticleDetail = () => {
                 data-testid={`tag-chip-${tag}`}
                 variant="outlined"
                 onClick={() => handleTagClick(tag)}
-                clickable
+                // clickable
               />
             ))}
           </Stack>
@@ -307,15 +315,14 @@ const ArticleDetail = () => {
                   sx={{
                     textDecoration: "none",
                     color: "inherit",
-                    border: `1px solid ${theme.palette.divider}`,
+                    border: `1px solid `,
                     borderRadius: 2,
-                    p: 2,
-                    backgroundColor: theme.palette.background.paper,
+                    padding : 2,
+                    backgroundColor: "white",
                     cursor: "pointer",
                     transition: "transform 0.2s, boxShadow 0.2s",
                     "&:hover": {
                       transform: "translateY(-2px)",
-                      boxShadow: theme.shadows[3],
                     },
                   }}
                 >

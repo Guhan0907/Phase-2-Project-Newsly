@@ -29,8 +29,9 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
 
   const shareUrl = window.location.href;
 
+  // for opening the menu 
   const handleMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event.currentTarget); 
   };
 
   const handleMenuClose = () => {
@@ -41,12 +42,7 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
     try {
       await navigator.clipboard.writeText(shareUrl);
     } catch (err) {
-      const textArea = document.createElement("textarea");
-      textArea.value = shareUrl;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
+      console.log("There is a error in this option sorry")
     } finally {
       setSnackbarOpen(true);
       handleMenuClose();
@@ -82,7 +78,7 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
 
       {/* Share Menu */}
       <Menu
-        anchorEl={anchorEl}
+        anchorEl={anchorEl}   
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
         anchorOrigin={{
@@ -99,12 +95,8 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
 
         <MenuItem
           component="a"
-          href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-            `${articleTitle} - ${shareUrl}`,
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={handleMenuClose}
+
+          onClick={() => {console.log("Whats App opened ---") ; handleMenuClose}}
         >
           <ListItemIcon>
             <WhatsAppIcon fontSize="small" />
@@ -113,11 +105,7 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
         </MenuItem>
 
         <MenuItem
-          component="a"
-          href={`mailto:?subject=${encodeURIComponent(
-            articleTitle,
-          )}&body=Check out this article: ${encodeURIComponent(shareUrl)}`}
-          onClick={handleMenuClose}
+          onClick={() => {console.log("Open to Mail ---"); handleMenuClose}}
         >
           <ListItemIcon>
             <EmailIcon fontSize="small" />

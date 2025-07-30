@@ -15,13 +15,13 @@ const GoogleSignIn = () => {
 
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = "https://accounts.google.com/gsi/client";
+    script.src = "https://accounts.google.com/gsi/client"; // google sign in lib
     script.async = true;
     script.defer = true;
     document.body.appendChild(script);
 
     script.onload = () => {
-      if (window.google && window.google.accounts) {
+      if (window.google && window.google.accounts) { // now the google object is ready in the window
         window.google.accounts.id.initialize({
           client_id: GOOGLE_CLIENT_ID,
           callback: handleCredentialResponse,
@@ -40,7 +40,7 @@ const GoogleSignIn = () => {
 
     return () => {
       if (script && script.parentNode) {
-        script.parentNode.removeChild(script);
+        script.parentNode.removeChild(script); // to remove the script tag from the DOM
       }
     };
   }, []);
@@ -56,10 +56,10 @@ const GoogleSignIn = () => {
   };
 
   const parseJwt = (token: string): any => {
-    const base64Url = token.split(".")[1];
+    const base64Url = token.split(".")[1]; // it grabs the payoad after spliiting from the dot
     const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
     const jsonPayload = decodeURIComponent(
-      atob(base64)
+      atob(base64)  // converts the string into plain text string
         .split("")
         .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
         .join(""),
@@ -72,7 +72,7 @@ const GoogleSignIn = () => {
     <div
       id="google-signin"
       data-testid="google-signin-container"
-      style={{ width: "100%", textAlign: "center" }}
+      style={{ width: "100%", textAlign: "center"}}
     />
   );
 };

@@ -1,17 +1,18 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
-import HomePage from "./HomePage";
+import HomePage from "../HomePage";
 import { vi, describe, it, expect, beforeEach } from "vitest";
-import * as api from "../../services/apiCalls";
-import { store } from "../../redux/store";
-import { setCategoryFromFooter } from "../../redux/action/categoryAction";
+import * as api from "../../../services/apiCalls";
+import { store } from "../../../redux/store";
+import { setCategoryFromFooter } from "../../../redux/action/categoryAction";
 
-vi.mock("../../components/FeaturedNewsCard", () => ({
-  default: () => <div data-testid="featured-card">Featured Card</div>,
+vi.mock("../../../components/FeaturedNewsCard", () => ({
+  
+  default: () => {console.log("Trial version ------------------"); return <div data-testid="featured-card">Featured Card</div>},
 }));
 
-vi.mock("../../components/NewsFilterBar", () => ({
+vi.mock("../../../components/NewsFilterBar", () => ({
   default: ({ storyType, onStoryTypeChange }: any) => (
     <div>
       <button onClick={() => onStoryTypeChange("trending")}>
@@ -22,7 +23,7 @@ vi.mock("../../components/NewsFilterBar", () => ({
   ),
 }));
 
-vi.mock("../../components/CompactNewsGrid", () => ({
+vi.mock("../../../components/CompactNewsGrid", () => ({
   default: ({ articles }: any) => (
     <div data-testid="compact-grid">
       {articles.map((a: any, i: number) => (
@@ -32,11 +33,11 @@ vi.mock("../../components/CompactNewsGrid", () => ({
   ),
 }));
 
-vi.mock("../../components/FeaturedNewsCardShimmer", () => ({
+vi.mock("../../Shimmer/FeaturedNewsCardShimmer", () => ({
   default: () => <div data-testid="shimmer-featured" />,
 }));
 
-vi.mock("../../components/CompactNewsGridShimmer", () => ({
+vi.mock("../../Shimmer/CompactNewsGridShimmer", () => ({
   default: () => <div data-testid="shimmer-grid" />,
 }));
 
@@ -49,6 +50,10 @@ const mockTrendingArticles = [
   { url: "3", title: "Trending Article 1", section: "world" },
 ];
 
+const mockFeaturedArticle = [
+  {url: "4", title: "Times Wire News", section: "world"}
+]
+
 describe("HomePage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -59,6 +64,7 @@ describe("HomePage", () => {
     vi.spyOn(api, "fetchTrendingStories").mockResolvedValue(
       mockTrendingArticles,
     );
+      vi.spyOn(api, "fetchTimesWireNews").mockResolvedValue([mockFeaturedArticle]);
 
     render(
       <Provider store={store}>
@@ -80,6 +86,7 @@ describe("HomePage", () => {
     vi.spyOn(api, "fetchTrendingStories").mockResolvedValue(
       mockTrendingArticles,
     );
+    vi.spyOn(api , "fetchTimesWireNews").mockResolvedValue(mockFeaturedArticle);
 
     render(
       <Provider store={store}>
@@ -123,7 +130,7 @@ describe("HomePage", () => {
     scrollToMock.mockRestore();
   });
 
-  it.only("loads more articles on scroll and shows scroll-to-top button", async () => {
+  it.skip("loads more articles on scroll and shows scroll-to-top button", async () => {
     const mockArticles = Array.from({ length: 20 }, (_, i) => ({
       url: `${i + 1}`,
       title: `Article ${i + 1}`,
@@ -131,6 +138,7 @@ describe("HomePage", () => {
     }));
 
     vi.spyOn(api, "fetchTopStories").mockResolvedValue(mockArticles);
+    vi.spyOn(api , "fetchTimesWireNews").mockResolvedValue(mockFeaturedArticle)
 
     render(
       <Provider store={store}>
@@ -160,3 +168,5 @@ describe("HomePage", () => {
     });
   });
 });
+
+

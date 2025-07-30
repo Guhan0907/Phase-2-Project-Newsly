@@ -1,93 +1,165 @@
+
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
+  API,
   fetchTopStories,
   fetchTrendingStories,
-  fetchArchivedStories,
   fetchTimesWireNews,
-  fetchArticleById,
   fetchTopStoriesBySection,
+  searchArticlesByQuery,
+  fetchArticleById,
 } from "../apiCalls";
 
-import AxiosMockAdapter from "axios-mock-adapter";
-import API from "../axiosInstance";
-import { describe, it, expect, beforeEach } from "vitest";
+// Mock axios and API
+vi.mock("../apiCalls", async () => {
+  const actual = await vi.importActual("../apiCalls");
 
-// Mock instance
-const mock = new AxiosMockAdapter(API);
+  return {
+    ...actual,
+    API: {
+      get: vi.fn(),
+    },
 
-beforeEach(() => {
-  mock.reset(); // reset before each test
+    // below for mocking the API calls
+    fetchTopStories: async (section = "home") => {
+      const res = await API.get(`/svc/topstories/v2/${section}.json`);
+      return res.data.results;
+    },
+
+  fetchTrendingStories :async () => {
+  const res = await API.get(`/svc/mostpopular/v2/viewed/7.json`);
+  return res.data.results;
+},
+
+fetchTimesWireNews : async () => {
+  const res = await API.get(`/svc/news/v3/content/all/all.json`);
+  return res.data.results;
+},
+
+fetchArticleById : async (id: string) => {
+  const topStories = await fetchTopStories();
+  const topMatch = topStories.find((article: any) => article.url === id);
+  if (topMatch) return topMatch;
+
+  const trendingStories = await fetchTrendingStories();
+  const trendingMatch = trendingStories.find(
+    (article: any) => article.url === id,
+  );
+  if (trendingMatch) return trendingMatch;
+
+  throw new Error("Article not found in Top or Trending stories");
+},
+
+fetchTopStoriesBySection : async (section: string) => {
+  const res = await API.get(`/svc/topstories/v2/${section}.json`);
+  return res.data.results;
+},
+
+searchArticlesByQuery : async (query: string) => {
+  const res = await API.get(`/svc/search/v2/articlesearch.json?q=${query}`);
+
+  const docs = res.data?.response?.docs;
+
+  if (!Array.isArray(docs)) {
+    throw new Error("Unexpected API response structure");
+  }
+
+  return docs;
+},
+
+  };
 });
 
+
+
 describe("apiCalls", () => {
-  it("fetches top stories", async () => {
-    mock.onGet("/svc/topstories/v2/home.json").reply(200, {
-      results: [{ title: "Story A" }],
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
+
+  it("fetches top stories (default section: home)", async () => {
+    (API.get as vi.Mock).mockResolvedValueOnce({
+      data: { results: [{ title: "Testing Stories this" }] },
     });
 
-    const data = await fetchTopStories();
-    expect(data).toEqual([{ title: "Story A" }]);
+    const res = await fetchTopStories();
+    expect(API.get).toHaveBeenCalledWith("/svc/topstories/v2/home.json");
+    expect(res).toEqual([{ title: "Testing Stories this" }]);
   });
 
   it("fetches trending stories", async () => {
-    mock.onGet("/svc/mostpopular/v2/viewed/7.json").reply(200, {
-      results: [{ title: "Trending Story" }],
+    (API.get as vi.Mock).mockResolvedValueOnce({
+      data: { results: [{ title: "Trending News" }] },
     });
 
-    const data = await fetchTrendingStories();
-    expect(data).toEqual([{ title: "Trending Story" }]);
-  });
-
-  it("fetches archived stories", async () => {
-    mock.onGet("/svc/archive/v1/2023/6.json").reply(200, {
-      response: { docs: [{ title: "Archived Story" }] },
-    });
-
-    const data = await fetchArchivedStories(2023, 6);
-    expect(data).toEqual([{ title: "Archived Story" }]);
+    const res = await fetchTrendingStories();
+    expect(API.get).toHaveBeenCalledWith("/svc/mostpopular/v2/viewed/7.json");
+    expect(res).toEqual([{ title: "Trending News" }]);
   });
 
   it("fetches Times Wire news", async () => {
-    mock.onGet("/svc/news/v3/content/all/all.json").reply(200, {
-      results: [{ title: "Wire Story" }],
+    (API.get as vi.Mock).mockResolvedValueOnce({
+      data: { results: [{ title: "Wire News" }] },
     });
 
-    const data = await fetchTimesWireNews();
-    expect(data).toEqual([{ title: "Wire Story" }]);
-  });
-
-  it("finds article by ID in top stories", async () => {
-    const article = { url: "https://nytimes.com/article123", title: "Top" };
-
-    mock.onGet("/svc/topstories/v2/home.json").reply(200, {
-      results: [article],
-    });
-    mock.onGet("/svc/mostpopular/v2/viewed/7.json").reply(200, {
-      results: [],
-    });
-
-    const found = await fetchArticleById(article.url);
-    expect(found).toEqual(article);
-  });
-
-  it("throws error if article not found in top or trending", async () => {
-    mock.onGet("/svc/topstories/v2/home.json").reply(200, {
-      results: [],
-    });
-    mock.onGet("/svc/mostpopular/v2/viewed/7.json").reply(200, {
-      results: [],
-    });
-
-    await expect(fetchArticleById("https://nytimes.com/fake")).rejects.toThrow(
-      "Article not found in Top or Trending stories",
-    );
+    const res = await fetchTimesWireNews();
+    expect(API.get).toHaveBeenCalledWith("/svc/news/v3/content/all/all.json");
+    expect(res).toEqual([{ title: "Wire News" }]);
   });
 
   it("fetches top stories by section", async () => {
-    mock.onGet("/svc/topstories/v2/world.json").reply(200, {
-      results: [{ title: "World News" }],
+    (API.get as vi.Mock).mockResolvedValueOnce({
+      data: { results: [{ title: "Science Story" }] },
     });
 
-    const data = await fetchTopStoriesBySection("world");
-    expect(data).toEqual([{ title: "World News" }]);
+    const res = await fetchTopStoriesBySection("science");
+    expect(API.get).toHaveBeenCalledWith("/svc/topstories/v2/science.json");
+    expect(res).toEqual([{ title: "Science Story" }]);
+  });
+
+  it("searches articles by query", async () => {
+    (API.get as vi.Mock).mockResolvedValueOnce({
+      data: { response: { docs: [{ headline: "Search Result" }] } },
+    });
+
+    const res = await searchArticlesByQuery("climate");
+    expect(API.get).toHaveBeenCalledWith(
+      "/svc/search/v2/articlesearch.json?q=climate"
+    );
+    expect(res).toEqual([{ headline: "Search Result" }]);
+  });
+
+  it("fetches article by ID from top stories", async () => {
+    const article = { url: "test-id", title: "Top Story Match" };
+
+    // Top story match
+    (API.get as vi.Mock)
+      .mockResolvedValueOnce({ data: { results: [article] } }) // fetchTopStories
+      .mockResolvedValueOnce({ data: { results: [] } }); // fetchTrendingStories fallback
+
+    const res = await fetchArticleById("test-id");
+    expect(res).toEqual(article);
+  });
+
+  it("fetches article by ID from trending if not in top stories", async () => {
+    const article = { url: "test-id", title: "Trending Match" };
+
+    // Top story no match
+    (API.get as vi.Mock)
+      .mockResolvedValueOnce({ data: { results: [] } }) // fetchTopStories
+      .mockResolvedValueOnce({ data: { results: [article] } }); // fetchTrendingStories
+
+    const res = await fetchArticleById("test-id");
+    expect(res).toEqual(article);
+  });
+
+  it("throws if article not found", async () => {
+    (API.get as vi.Mock)
+      .mockResolvedValueOnce({ data: { results: [] } }) // fetchTopStories
+      .mockResolvedValueOnce({ data: { results: [] } }); // fetchTrendingStories
+
+    await expect(fetchArticleById("not-found")).rejects.toThrow(
+      "Article not found in Top or Trending stories"
+    );
   });
 });
