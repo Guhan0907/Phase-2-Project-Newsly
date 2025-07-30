@@ -13,15 +13,19 @@ import type { FavouritesAction } from "./action/favouritesAction";
 import type { HistoryAction } from "./action/historyActions";
 import type { UserAction } from "./action/userAction";
 import type { CategoryAction } from "./action/categoryAction";
+import type { SavedArticlesAction } from "./action/savedArticleAction";
+import savedArticlesReducer from "./reducer/savedArticleReducer";
 
 export type AppActions =
   | ArticlesAction
   | FavouritesAction
   | HistoryAction
   | UserAction
-  | CategoryAction;
+  | CategoryAction
+  | SavedArticlesAction;
 
-const middlewareList = [thunk, logger];
+// const middlewareList = [thunk, logger];
+const middlewareList = [thunk];
 const enhancer = compose(applyMiddleware(...middlewareList));
 
 export const rootReducer = combineReducers({
@@ -30,6 +34,7 @@ export const rootReducer = combineReducers({
   history: historyReducer,
   user: userReducer,
   ui: categoryReducer,
+  savedArticles: savedArticlesReducer,
 });
 
 const persistConfig = {

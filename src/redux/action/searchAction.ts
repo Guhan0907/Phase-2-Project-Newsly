@@ -1,38 +1,19 @@
 import axios from "axios";
 import {
-  fetchArticlesRequest,
   fetchArticlesSuccess,
-  fetchArticlesFailure,
-  setSearchMode,
 } from "./articlesAction";
 import type { ArticlesAction } from "./articlesAction";
 import type { NYTArticle } from "../../types/article";
 import type { Dispatch } from "redux";
+import { searchArticlesByQuery } from "../../services/apiCalls";
 
 const API_KEY = import.meta.env.VITE_NYT_API_KEY;
-
-console.log("API KEY:", import.meta.env.VITE_NYT_API_KEY);
 
 export const searchArticles = (query: string) => {
   return async (dispatch: Dispatch<ArticlesAction>) => {
     try {
-      dispatch(setSearchMode(true));
-      dispatch(fetchArticlesRequest());
-      const response = await axios.get(
-        "https://api.nytimes.com/svc/search/v2/articlesearch.json",
-        {
-          params: {
-            q: query,
-            "api-key": API_KEY,
-          },
-        },
-      );
-
-      const docs = response.data?.response?.docs;
-
-      if (!Array.isArray(docs)) {
-        throw new Error("Unexpected API response structure");
-      }
+   
+      const docs = await searchArticlesByQuery(query);
 
       const formattedArticles: NYTArticle[] = docs.map((doc: any) => ({
         title: doc.headline?.main || "",
@@ -64,7 +45,7 @@ export const searchArticles = (query: string) => {
       console.error("Error details:", error);
       console.error("Full response:", error?.response?.data || error.message);
 
-      dispatch(fetchArticlesFailure("Search failed. Please try again."));
+      // dispatch(fetchArticlesFailure("Search failed. Please try again."));
     }
   };
 };

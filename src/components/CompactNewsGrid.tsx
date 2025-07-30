@@ -94,5 +94,4 @@ const CompactNewsGrid = ({ articles }: CompactNewsGridProps) => {
   );
 };
 
-// export default CompactNewsGrid;
 export default React.memo(CompactNewsGrid);

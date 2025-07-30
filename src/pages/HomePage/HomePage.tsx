@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+
 import {
   Container,
   Typography,
@@ -10,20 +10,33 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { KeyboardArrowUp as ArrowUpwardIcon } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchTopStories, fetchTrendingStories } from "../../services/apiCalls";
 import {
-  fetchArticlesRequest,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  lazy,
+  Suspense,
+} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
   fetchArticlesSuccess,
-  fetchArticlesFailure,
   fetchFeaturedSuccess,
 } from "../../redux/action/articlesAction";
-import { type AppDispatch, type RootState } from "../../redux/store";
-import FeaturedNewsCard from "../../components/FeaturedNewsCard";
-import CompactNewsGrid from "../../components/CompactNewsGrid";
-import NewsFilterBar from "../../components/NewsFilterBar";
-import CompactNewsGridShimmer from "../Shimmer/CompactNewsGridShimmer";
-import FeaturedNewsCardShimmer from "../Shimmer/FeaturedNewsCardShimmer";
+import { fetchTimesWireNews, fetchTopStories, fetchTrendingStories } from "../../services/apiCalls";
+import type { AppDispatch, RootState } from "../../redux/store";
+
+const FeaturedNewsCard = lazy(
+  () => import("../../components/FeaturedNewsCard"),
+);
+const CompactNewsGrid = lazy(() => import("../../components/CompactNewsGrid"));
+const NewsFilterBar = lazy(() => import("../../components/NewsFilterBar"));
+const CompactNewsGridShimmer = lazy(
+  () => import("../Shimmer/CompactNewsGridShimmer"),
+);
+const FeaturedNewsCardShimmer = lazy(
+  () => import("../Shimmer/FeaturedNewsCardShimmer"),
+);
 
 const HomePage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,8 +45,6 @@ const HomePage = () => {
   );
 
   const readHistory = useSelector((state: RootState) => state.history);
-  const isRead = (articleUrl: string) => readHistory.includes(articleUrl);
-
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -41,9 +52,6 @@ const HomePage = () => {
   const [filters, setFilters] = useState({
     category: "",
     section: "",
-    date: "",
-    year: new Date().getFullYear().toString(),
-    month: (new Date().getMonth() + 1).toString(),
   });
 
   const [page, setPage] = useState(1); // For infinite scroll
@@ -52,53 +60,49 @@ const HomePage = () => {
   useEffect(() => {
     const loadArticlesByType = async () => {
       try {
-        dispatch(fetchArticlesRequest());
+        // dispatch(fetchArticlesRequest());
 
         if (storyType === "top") {
-          const topStories = await fetchTopStories(filters.section || "home");
-          dispatch(fetchFeaturedSuccess(topStories[0]));
+          const topStories = await fetchTopStories(filters.section || "home"); // for the section part data is send here
+          const timeWireNews = await fetchTimesWireNews();
+          dispatch(fetchFeaturedSuccess(timeWireNews[0])); 
           dispatch(fetchArticlesSuccess(topStories));
         } else if (storyType === "trending") {
+
           const trendingStories = await fetchTrendingStories();
-          dispatch(fetchFeaturedSuccess(trendingStories[0]));
+          const timeWireNews = await fetchTimesWireNews();
+          dispatch(fetchFeaturedSuccess(timeWireNews[0])); 
           dispatch(fetchArticlesSuccess(trendingStories));
         }
 
-        setPage(1);
+        setPage(1); // for the pagination part
       } catch (error) {
-        dispatch(fetchArticlesFailure("Failed to load articles"));
+        console.error("Error occured" , error)
+        // dispatch(fetchArticlesFailure("Failed to load articles"));
       }
     };
 
-    loadArticlesByType();
-  }, [storyType, filters.section, filters.year, filters.month, dispatch]);
+    loadArticlesByType(); // inside the useEffect i cannot use the await or pass the async so it is called in a manner of function
+  }, [storyType, filters.section,  dispatch]);
 
-  useEffect(() => {
-    if (storyType === "trending") {
-      setFilters((prev) => ({ ...prev, section: "", year: "", month: "" }));
-    } else if (storyType === "archived") {
-      setFilters((prev) => ({
-        ...prev,
-        section: "",
-        year: prev.year || new Date().getFullYear().toString(),
-        month: prev.month || (new Date().getMonth() + 1).toString(),
-      }));
-    } else if (storyType === "top") {
-      setFilters((prev) => ({ ...prev, year: "", month: "" }));
+
+
+  // Get only the articles that match the selected section
+const filteredArticles = useMemo(() => {
+  const allArticles = filtered || [];
+
+  return allArticles.filter((article) => {
+    // If section is selected, only show matching articles
+    if (filters.section) {
+      const articleSection = article.section?.toLowerCase().trim();
+      const selectedSection = filters.section.toLowerCase().trim();
+      return articleSection === selectedSection;
     }
-  }, [storyType]);
+    // If no section selected, include all
+    return true;
+  });
+}, [filtered, filters]);
 
-  // Filter + add read status
-  const filteredArticles = useMemo(() => {
-    return (filtered ?? []).filter((article) => {
-      const matchesSection = filters.section
-        ? article.section?.toLowerCase().trim() ===
-          filters.section.toLowerCase().trim()
-        : true;
-
-      return matchesSection;
-    });
-  }, [filtered, filters]);
 
   const isReadMemo = useCallback(
     (url: string) => readHistory.includes(url),
@@ -127,17 +131,17 @@ const HomePage = () => {
     }
   }, [selectedCategory]);
 
-  // Simulate infinite scroll
   const visibleArticles = useMemo(() => {
-    return articlesWithReadStatus.slice(0, page * 10); // 10 items per scroll
+    return articlesWithReadStatus.slice(0, page * 10);
   }, [articlesWithReadStatus, page]);
 
-  // Scroll listener
   useEffect(() => {
     const handleScroll = () => {
-      const bottom =
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+      const bottom = 
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 100; // this is used to fetch when the users came near lastArticle
       const atTop = window.scrollY > 300;
+      // console.log("pages - ",page);
+      
 
       if (bottom && page * 10 < articlesWithReadStatus.length) {
         setPage((prev) => prev + 1);
@@ -166,36 +170,48 @@ const HomePage = () => {
     <Container maxWidth="lg" sx={{ py: 3 }}>
       {error && <Typography color="error">{error}</Typography>}
 
-      {loading && !featured && <FeaturedNewsCardShimmer />}
-
+      {/* Featured Article */}
+      {loading && !featured && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <FeaturedNewsCardShimmer />
+        </Suspense>
+      )}
       {!loading && featured && (
-        <>
-          <FeaturedNewsCard article={featured} index={0} />
-          <Divider sx={{ my: 4 }} />
-        </>
+        <Suspense fallback={<FeaturedNewsCardShimmer />}>
+          <>
+            <FeaturedNewsCard article={featured} index={0} />
+            <Divider sx={{ my: 4 }} />
+          </>
+        </Suspense>
       )}
 
-      <NewsFilterBar
-        storyType={storyType}
-        onStoryTypeChange={handleStoryTypeChange}
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
-      />
+      {/* Filters */}
+      <Suspense fallback={<div>Loading filters...</div>}>
+        <NewsFilterBar
+          storyType={storyType}
+          onStoryTypeChange={handleStoryTypeChange}
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+        />
+      </Suspense>
 
-      <Typography variant="h6" gutterBottom>
+      {/* Title */}
+      <Typography variant="h6" marginBottom={2}>
         {storyType === "top"
-          ? "Top Stories"
-          : storyType === "trending"
-            ? "Trending Stories"
-            : "Archived Stories (July 2024)"}
+          ? "Top Stories" :
+             "Trending Stories"}
       </Typography>
 
-      {loading ? (
-        <CompactNewsGridShimmer />
-      ) : (
-        <CompactNewsGrid articles={visibleArticles} />
-      )}
+      {/* Articles Grid */}
+      <Suspense fallback={<CompactNewsGridShimmer />}>
+        {loading ? (
+          <CompactNewsGridShimmer />
+        ) : (
+          <CompactNewsGrid articles={visibleArticles} />
+        )}
+      </Suspense>
 
+      {/* Scroll to Top */}
       <Zoom in={showScroll}>
         <Box
           onClick={scrollToTop}

@@ -7,10 +7,8 @@ import PageNotFound from "./pages/PageNotFound/PageNotFound";
 import HomePage from "./pages/HomePage/HomePage";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ErrorBoundary from "./pages/ErrorBoundary/ErrorBoundary";
-import ArticleDetail from "./pages/articlesDetail/articlesDetail";
+import ArticleDetail from "./pages/articlesDetail/ArticleDetail";
 import Favourites from "./pages/Favourites/Favourites";
 import AuthPage from "./pages/Login/AuthPage";
 import ProtectedRoutes from "./pages/ProtectedRoutes/ProtectedRoutes";
@@ -34,7 +32,7 @@ const theme = createTheme({
   },
 });
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
@@ -84,7 +82,6 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <LocalizationProvider dateAdapter={AdapterDayjs}>
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <ErrorBoundary>
@@ -92,5 +89,4 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </ErrorBoundary>
       </ThemeProvider>
     </Provider>
-  </LocalizationProvider>,
 );

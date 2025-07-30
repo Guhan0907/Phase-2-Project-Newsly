@@ -45,11 +45,11 @@ const UserMenu = ({ user, onLogout }: UserMenuProps) => {
         <MenuItem
           onClick={() => {
             handleMenuClose();
-            onLogout();
           }}
         >
-          <Logout fontSize="small" sx={{ mr: 1 }} />
-          Logout
+          
+          <Logout fontSize="small" sx ={{ mr: 1 }} />  
+          <span onClick={() => onLogout()}> Logout </span>
         </MenuItem>
       </Menu>
     </>

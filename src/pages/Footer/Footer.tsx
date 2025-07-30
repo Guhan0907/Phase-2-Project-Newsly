@@ -16,7 +16,7 @@ import { useDispatch } from "react-redux";
 import newsly from "../../assets/no_background.png";
 import { setCategoryFromFooter } from "../../redux/action/categoryAction";
 
-const categories = ["world", "us", "business", "health", "science", "arts"];
+const categoryList = ["world", "us", "business", "health", "science", "arts"];
 
 const Footer = () => {
   const theme = useTheme();
@@ -31,6 +31,9 @@ const Footer = () => {
   const handleCategoryClick = useCallback(
     (category: string) => {
       dispatch(setCategoryFromFooter(category));
+      if (location.pathname !== "/") {
+        navigate("/");
+      }
     },
     [dispatch],
   );
@@ -48,11 +51,11 @@ const Footer = () => {
     }
   }, [email]);
 
-  const categoryList = useMemo(() => categories, []);
 
   return (
     <Box
       component="footer"
+      data-testid="footer"
       sx={{
         mt: 4,
         px: isMobile ? 2 : 6,
@@ -68,6 +71,7 @@ const Footer = () => {
               component="img"
               src={newsly}
               alt="Newsly Logo"
+              data-testid="Newsly Logo"
               sx={{
                 width: 100,
                 height: 90,
@@ -75,9 +79,7 @@ const Footer = () => {
                 mr: 2,
               }}
             />
-            {/* <Typography variant="h6" fontWeight={600}>
-              Newsly
-            </Typography> */}
+            
           </Box>
 
           <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -109,7 +111,7 @@ const Footer = () => {
               onClick={() => handleCategoryClick(cat)}
               sx={{
                 cursor: "pointer",
-                textTransform: "capitalize",
+                textTransform: "capitalize",// makes the first letter capital
                 mb: 0.5,
                 "&:hover": { textDecoration: "underline" },
               }}
@@ -159,14 +161,20 @@ const Footer = () => {
             autoHideDuration={3000}
             onClose={() => setShowSnackbar(false)}
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            // message={"Ths"}
           >
-            <Alert
-              severity="success"
-              variant="filled"
-              onClose={() => setShowSnackbar(false)}
-            >
-              Thanks for subscribing to Newsly!
-            </Alert>
+            <div
+    style={{
+      backgroundColor: "#28b463",
+      color: "#fff",
+      padding: "12px 20px",
+      borderRadius: "4px",
+      fontWeight: 500,
+    }}
+  >
+    Thanks for subscribing to Newsly!
+  </div>
+  
           </Snackbar>
         </Grid>
       </Grid>
@@ -183,6 +191,7 @@ const Footer = () => {
       >
         <Typography
           variant="body2"
+          data-testid="contact-us"
           sx={{ cursor: "pointer" }}
           onClick={handleContactUs}
         >

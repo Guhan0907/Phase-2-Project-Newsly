@@ -1,8 +1,10 @@
 import { Box, Typography, Container, Button } from "@mui/material";
 import contactImg from "../../assets/contactus.jpeg";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ContactUs = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
@@ -43,7 +45,7 @@ const ContactUs = () => {
         variant="contained"
         color="primary"
         sx={{ mt: 4 }}
-        onClick={() => window.history.back()}
+        onClick={() => navigate(-1)}
       >
         Back to News
       </Button>

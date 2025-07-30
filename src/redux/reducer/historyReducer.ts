@@ -8,12 +8,12 @@ const initialState: string[] = [];
 
 const historyReducer = (
   state = initialState,
-  action: HistoryAction, // accept both actions
+  action: HistoryAction,
 ): string[] => {
   switch (action.type) {
     case ADD_TO_HISTORY:
       if (state.includes(action.payload)) return state;
-      return [action.payload, ...state.slice(0, 19)];
+      return [action.payload, ...state];
 
     case CLEAR_HISTORY:
       return [];

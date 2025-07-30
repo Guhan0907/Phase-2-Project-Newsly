@@ -1,30 +1,30 @@
-import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
 import App from "./App";
+import { store } from "./redux/store";
 
-describe("App Component", () => {
-  it("renders the Vite and React logos", () => {
-    render(<App />);
-    expect(screen.getByAltText("Vite logo")).toBeInTheDocument();
-    expect(screen.getByAltText("React logo")).toBeInTheDocument();
-  });
+const DummyOutlet = () => <div data-testid="dummy-outlet">Outlet Content</div>;
 
-  it("renders initial count and increments on click", () => {
-    render(<App />);
+describe("App Layout", () => {
+  it("renders Header, Outlet, and Footer", () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter initialEntries={["/"]}>
+          <Routes>
+            <Route path="/" element={<App />}>
+              <Route index element={<DummyOutlet />} />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </Provider>,
+    );
 
-    const button = screen.getByRole("button");
-    expect(button).toHaveTextContent("count is 0");
+    expect(screen.getByTestId("dummy-outlet")).toBeInTheDocument();
 
-    fireEvent.click(button);
-    expect(button).toHaveTextContent("count is 1");
-  });
+    expect(screen.getByTestId("footer")).toBeInTheDocument();
 
-  it("renders instructional text", () => {
-    render(<App />);
-
-    // expect(screen.getByText('Edit src/App.tsx and save to test HMR')).toBeInTheDocument()q
-    expect(
-      screen.getByText(/Click on the Vite and React logos/),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("Newsly Logo")).toBeInTheDocument();
   });
 });

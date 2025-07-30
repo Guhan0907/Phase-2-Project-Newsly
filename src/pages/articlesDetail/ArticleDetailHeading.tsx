@@ -40,15 +40,14 @@ const ArticleDetailHeading = ({ article }: { article: NYTArticle }) => {
       )}
 
       <Typography variant="body2" color="text.secondary" gutterBottom>
-        {publicationDate} • {publicationTime}
+        {publicationDate} - {publicationTime}
+        {/* {article.published_date} */}
       </Typography>
 
-      {(article.section || article.subsection) && (
+      {(article.section) && (
         <Stack direction="row" spacing={1} mt={1} mb={2} flexWrap="wrap">
-          {article.section && <Chip label={article.section} color="primary" />}
-          {article.subsection && (
-            <Chip label={article.subsection} color="primary" />
-          )}
+          {article.section && <Chip label={`# ${article.section}`} color="primary" />}
+         
         </Stack>
       )}
 

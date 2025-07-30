@@ -51,6 +51,7 @@ const AllItemsCard = ({
           </Typography>
           {showFavoriteButton && (
             <IconButton
+              data-testid="favorite-button"
               onClick={(e) => {
                 (e.stopPropagation(), onFavoriteClick?.(article.url));
               }}
