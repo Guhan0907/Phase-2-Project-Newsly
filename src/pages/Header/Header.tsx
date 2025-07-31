@@ -52,20 +52,19 @@ const Header = () => {
   const debouncedQuery = useDebounce(query, 1000);
 
   const fetchDefaultArticles = () => {
-
     Promise.all([fetchTopStories(), fetchTimesWireNews()])
       .then(([topStories, featured]) => {
         dispatch(fetchArticlesSuccess(topStories));
         dispatch(fetchFeaturedSuccess(featured[0]));
       })
       .catch((error) => {
-        console.error("Error while fetching the details" , error)
+        console.error("Error while fetching the details", error);
       });
   };
 
   const handleSearch = () => {
     const trimmed = query.trim();
-    console.log(" Trimmed ",trimmed)
+    console.log(" Trimmed ", trimmed);
     if (!trimmed) {
       // called when the user enter only blank
       fetchDefaultArticles();
@@ -81,7 +80,7 @@ const Header = () => {
     navigate("/auth");
   };
 
-// this is in header part for the another one API call getting called there..............
+  // this is in header part for the another one API call getting called there..............
   useEffect(() => {
     if (!isLogged) return;
     const trimmed = debouncedQuery.trim();

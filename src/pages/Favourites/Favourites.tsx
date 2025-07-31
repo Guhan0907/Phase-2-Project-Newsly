@@ -1,7 +1,3 @@
-
-
-
-
 import { useEffect, useState } from "react";
 import { Box, Typography, Button, Grid } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,16 +13,11 @@ import AllItemsCardShimmer from "../Shimmer/AllItemCardShimmer";
 import no_article_image from "../../assets/No_Article.png";
 import type { NYTArticle } from "../../types/article";
 
-
 const Favourites = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const favourites = useSelector((state: RootState) => state.favourites); 
-
-  
-  
-  
+  const favourites = useSelector((state: RootState) => state.favourites);
 
   const [loading, setLoading] = useState(false);
 
@@ -41,35 +32,40 @@ const Favourites = () => {
     };
 
     loadArticles();
-     
   }, [dispatch, favourites]);
 
-  const topStories = useSelector((state: RootState) => state.savedArticles.topStories);
-  const trending = useSelector((state: RootState) => state.savedArticles.trending);
+  const topStories = useSelector(
+    (state: RootState) => state.savedArticles.topStories,
+  );
+  const trending = useSelector(
+    (state: RootState) => state.savedArticles.trending,
+  );
+  const timesWire = useSelector(
+    (state: RootState) => state.savedArticles.timesWire,
+  );
   // console.log("topStories => ",topStories,"   ---   ");
 
-
   // below is for cheking wheter the favourite data is in topstories or trending
-const savedArticles: NYTArticle[] = [];
-const allArticles = topStories.concat(trending); // combine both arrays
+  const savedArticles: NYTArticle[] = [];
+  const concatArticles = topStories.concat(trending); // combine both arrays
+  const allArticles = concatArticles.concat(timesWire);
 
-for (let i = 0; i < allArticles.length; i++) {
-  const article = allArticles[i];
+  for (let i = 0; i < allArticles.length; i++) {
+    const article = allArticles[i];
 
-  // Check if the article URL is saved in favourites
-  if (favourites.includes(article.url)) {
-    savedArticles.push(article);
-  }
-}
-
-
-  const handleRemove = (url:string) => {
-    dispatch(removeFromFavourites(url))
+    // Check if the article URL is saved in favourites
+    if (favourites.includes(article.url)) {
+      savedArticles.push(article);
+    }
   }
 
-  const handleClick = (article: NYTArticle , index:number) => {
-    navigate(`/article/${index}` , {state : {article}})
-  }
+  const handleRemove = (url: string) => {
+    dispatch(removeFromFavourites(url));
+  };
+
+  const handleClick = (article: NYTArticle, index: number) => {
+    navigate(`/article/${index}`, { state: { article } });
+  };
 
   // used to load the shimmer
   if (loading) {

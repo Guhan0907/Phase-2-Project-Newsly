@@ -47,8 +47,7 @@ const UserMenu = ({ user, onLogout }: UserMenuProps) => {
             handleMenuClose();
           }}
         >
-          
-          <Logout fontSize="small" sx ={{ mr: 1 }} />  
+          <Logout fontSize="small" sx={{ mr: 1 }} />
           <span onClick={() => onLogout()}> Logout </span>
         </MenuItem>
       </Menu>

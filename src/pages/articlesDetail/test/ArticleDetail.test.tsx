@@ -233,11 +233,6 @@ describe("ArticleDetail", () => {
   });
 
   describe("Article Display", () => {
-   
-
-
-  
-
     it("should display main image with superJumbo format", () => {
       mockUseLocation.mockReturnValue({
         state: { article: mockArticle },
@@ -346,10 +341,6 @@ describe("ArticleDetail", () => {
 
       expect(screen.getByTestId("save-button")).toHaveTextContent("Unsave");
     });
-
-
-
-   
   });
 
   describe("Related Articles", () => {

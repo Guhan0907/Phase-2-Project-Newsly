@@ -32,7 +32,6 @@ const initialState: ArticlesState = {
 };
 
 describe("articlesReducer", () => {
-  
   it("handles FETCH_ARTICLES_SUCCESS", () => {
     const newState = articlesReducer(
       initialState,
@@ -43,8 +42,6 @@ describe("articlesReducer", () => {
     expect(newState.filtered).toEqual(mockArticles);
   });
 
- 
-
   it("handles FETCH_FEATURED_SUCCESS", () => {
     const featured = mockArticles[0];
     const newState = articlesReducer(
@@ -53,8 +50,6 @@ describe("articlesReducer", () => {
     );
     expect(newState.featured).toEqual(featured);
   });
-
-  
 
   it("returns current state by default", () => {
     const unknownAction = { type: "UNKNOWN_ACTION" } as any;

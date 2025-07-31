@@ -30,7 +30,7 @@ export const addToFavourites = (id: string): AddToFavoritesAction => ({
 export const removeFromFavourites = (
   id: string,
 ): RemoveFromFavoritesAction => ({
-  type: REMOVE_FROM_FAVORITES, 
+  type: REMOVE_FROM_FAVORITES,
   payload: id,
 });
 

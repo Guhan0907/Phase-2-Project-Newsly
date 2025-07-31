@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   API,
@@ -26,51 +25,48 @@ vi.mock("../apiCalls", async () => {
       return res.data.results;
     },
 
-  fetchTrendingStories :async () => {
-  const res = await API.get(`/svc/mostpopular/v2/viewed/7.json`);
-  return res.data.results;
-},
+    fetchTrendingStories: async () => {
+      const res = await API.get(`/svc/mostpopular/v2/viewed/7.json`);
+      return res.data.results;
+    },
 
-fetchTimesWireNews : async () => {
-  const res = await API.get(`/svc/news/v3/content/all/all.json`);
-  return res.data.results;
-},
+    fetchTimesWireNews: async () => {
+      const res = await API.get(`/svc/news/v3/content/all/all.json`);
+      return res.data.results;
+    },
 
-fetchArticleById : async (id: string) => {
-  const topStories = await fetchTopStories();
-  const topMatch = topStories.find((article: any) => article.url === id);
-  if (topMatch) return topMatch;
+    fetchArticleById: async (id: string) => {
+      const topStories = await fetchTopStories();
+      const topMatch = topStories.find((article: any) => article.url === id);
+      if (topMatch) return topMatch;
 
-  const trendingStories = await fetchTrendingStories();
-  const trendingMatch = trendingStories.find(
-    (article: any) => article.url === id,
-  );
-  if (trendingMatch) return trendingMatch;
+      const trendingStories = await fetchTrendingStories();
+      const trendingMatch = trendingStories.find(
+        (article: any) => article.url === id,
+      );
+      if (trendingMatch) return trendingMatch;
 
-  throw new Error("Article not found in Top or Trending stories");
-},
+      throw new Error("Article not found in Top or Trending stories");
+    },
 
-fetchTopStoriesBySection : async (section: string) => {
-  const res = await API.get(`/svc/topstories/v2/${section}.json`);
-  return res.data.results;
-},
+    fetchTopStoriesBySection: async (section: string) => {
+      const res = await API.get(`/svc/topstories/v2/${section}.json`);
+      return res.data.results;
+    },
 
-searchArticlesByQuery : async (query: string) => {
-  const res = await API.get(`/svc/search/v2/articlesearch.json?q=${query}`);
+    searchArticlesByQuery: async (query: string) => {
+      const res = await API.get(`/svc/search/v2/articlesearch.json?q=${query}`);
 
-  const docs = res.data?.response?.docs;
+      const docs = res.data?.response?.docs;
 
-  if (!Array.isArray(docs)) {
-    throw new Error("Unexpected API response structure");
-  }
+      if (!Array.isArray(docs)) {
+        throw new Error("Unexpected API response structure");
+      }
 
-  return docs;
-},
-
+      return docs;
+    },
   };
 });
-
-
 
 describe("apiCalls", () => {
   beforeEach(() => {
@@ -124,7 +120,7 @@ describe("apiCalls", () => {
 
     const res = await searchArticlesByQuery("climate");
     expect(API.get).toHaveBeenCalledWith(
-      "/svc/search/v2/articlesearch.json?q=climate"
+      "/svc/search/v2/articlesearch.json?q=climate",
     );
     expect(res).toEqual([{ headline: "Search Result" }]);
   });
@@ -159,7 +155,7 @@ describe("apiCalls", () => {
       .mockResolvedValueOnce({ data: { results: [] } }); // fetchTrendingStories
 
     await expect(fetchArticleById("not-found")).rejects.toThrow(
-      "Article not found in Top or Trending stories"
+      "Article not found in Top or Trending stories",
     );
   });
 });

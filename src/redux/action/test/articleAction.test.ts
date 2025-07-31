@@ -29,7 +29,6 @@ describe("articlesAction", () => {
     isRead: false,
   };
 
-
   it("should create FETCH_ARTICLES_SUCCESS action", () => {
     const articles = [mockArticle];
     expect(fetchArticlesSuccess(articles)).toEqual({
@@ -38,13 +37,10 @@ describe("articlesAction", () => {
     });
   });
 
-  
   it("should create FETCH_FEATURED_SUCCESS action", () => {
     expect(fetchFeaturedSuccess(mockArticle)).toEqual({
       type: FETCH_FEATURED_SUCCESS,
       payload: mockArticle,
     });
   });
-
-  
 });

@@ -1,6 +1,5 @@
-
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { searchArticles } from "../searchAction"; 
+import { searchArticles } from "../searchAction";
 import { fetchArticlesSuccess } from "../articlesAction";
 import { searchArticlesByQuery } from "../../../services/apiCalls";
 import type { NYTArticle } from "../../../types/article";
@@ -63,8 +62,8 @@ describe("searchArticles async action", () => {
             section: "Technology",
             isRead: false,
           }),
-        ])
-      )
+        ]),
+      ),
     );
   });
 

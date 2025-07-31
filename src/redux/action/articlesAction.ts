@@ -41,14 +41,12 @@ export const fetchArticlesSuccess = (
   payload: data,
 });
 
-
 export const fetchFeaturedSuccess = (
   article: NYTArticle,
 ): fetchFeaturedSuccessAction => ({
-  type: "FETCH_FEATURED_SUCCESS", 
+  type: "FETCH_FEATURED_SUCCESS",
   payload: article,
 });
-
 
 // for the whole export
 export type ArticlesAction =

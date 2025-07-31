@@ -51,7 +51,6 @@ const Footer = () => {
     }
   }, [email]);
 
-
   return (
     <Box
       component="footer"
@@ -79,7 +78,6 @@ const Footer = () => {
                 mr: 2,
               }}
             />
-            
           </Box>
 
           <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -111,7 +109,7 @@ const Footer = () => {
               onClick={() => handleCategoryClick(cat)}
               sx={{
                 cursor: "pointer",
-                textTransform: "capitalize",// makes the first letter capital
+                textTransform: "capitalize", // makes the first letter capital
                 mb: 0.5,
                 "&:hover": { textDecoration: "underline" },
               }}
@@ -164,17 +162,16 @@ const Footer = () => {
             // message={"Ths"}
           >
             <div
-    style={{
-      backgroundColor: "#28b463",
-      color: "#fff",
-      padding: "12px 20px",
-      borderRadius: "4px",
-      fontWeight: 500,
-    }}
-  >
-    Thanks for subscribing to Newsly!
-  </div>
-  
+              style={{
+                backgroundColor: "#28b463",
+                color: "#fff",
+                padding: "12px 20px",
+                borderRadius: "4px",
+                fontWeight: 500,
+              }}
+            >
+              Thanks for subscribing to Newsly!
+            </div>
           </Snackbar>
         </Grid>
       </Grid>
