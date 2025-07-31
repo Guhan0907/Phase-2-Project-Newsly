@@ -8,8 +8,10 @@ import { store } from "../../../redux/store";
 import { setCategoryFromFooter } from "../../../redux/action/categoryAction";
 
 vi.mock("../../../components/FeaturedNewsCard", () => ({
-  
-  default: () => {console.log("Trial version ------------------"); return <div data-testid="featured-card">Featured Card</div>},
+  default: () => {
+    console.log("Trial version ------------------");
+    return <div data-testid="featured-card">Featured Card</div>;
+  },
 }));
 
 vi.mock("../../../components/NewsFilterBar", () => ({
@@ -51,8 +53,8 @@ const mockTrendingArticles = [
 ];
 
 const mockFeaturedArticle = [
-  {url: "4", title: "Times Wire News", section: "world"}
-]
+  { url: "4", title: "Times Wire News", section: "world" },
+];
 
 describe("HomePage", () => {
   beforeEach(() => {
@@ -64,7 +66,9 @@ describe("HomePage", () => {
     vi.spyOn(api, "fetchTrendingStories").mockResolvedValue(
       mockTrendingArticles,
     );
-      vi.spyOn(api, "fetchTimesWireNews").mockResolvedValue([mockFeaturedArticle]);
+    vi.spyOn(api, "fetchTimesWireNews").mockResolvedValue([
+      mockFeaturedArticle,
+    ]);
 
     render(
       <Provider store={store}>
@@ -86,7 +90,7 @@ describe("HomePage", () => {
     vi.spyOn(api, "fetchTrendingStories").mockResolvedValue(
       mockTrendingArticles,
     );
-    vi.spyOn(api , "fetchTimesWireNews").mockResolvedValue(mockFeaturedArticle);
+    vi.spyOn(api, "fetchTimesWireNews").mockResolvedValue(mockFeaturedArticle);
 
     render(
       <Provider store={store}>
@@ -138,7 +142,7 @@ describe("HomePage", () => {
     }));
 
     vi.spyOn(api, "fetchTopStories").mockResolvedValue(mockArticles);
-    vi.spyOn(api , "fetchTimesWireNews").mockResolvedValue(mockFeaturedArticle)
+    vi.spyOn(api, "fetchTimesWireNews").mockResolvedValue(mockFeaturedArticle);
 
     render(
       <Provider store={store}>
@@ -168,5 +172,3 @@ describe("HomePage", () => {
     });
   });
 });
-
-

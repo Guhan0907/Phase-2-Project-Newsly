@@ -1,7 +1,5 @@
 import axios from "axios";
-import {
-  fetchArticlesSuccess,
-} from "./articlesAction";
+import { fetchArticlesSuccess } from "./articlesAction";
 import type { ArticlesAction } from "./articlesAction";
 import type { NYTArticle } from "../../types/article";
 import type { Dispatch } from "redux";
@@ -12,7 +10,6 @@ const API_KEY = import.meta.env.VITE_NYT_API_KEY;
 export const searchArticles = (query: string) => {
   return async (dispatch: Dispatch<ArticlesAction>) => {
     try {
-   
       const docs = await searchArticlesByQuery(query);
 
       const formattedArticles: NYTArticle[] = docs.map((doc: any) => ({

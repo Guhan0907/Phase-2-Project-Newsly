@@ -1,4 +1,3 @@
-
 import {
   Box,
   Typography,
@@ -34,11 +33,11 @@ const ArticleDetail = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const topStories = useSelector(
-    (state: RootState) => state.articles.topStories, //  used for searching purpose 
+    (state: RootState) => state.articles.topStories, //  used for searching purpose
   );
 
   const [article, setArticle] = useState<NYTArticle | null>(
-    state?.article || null,  
+    state?.article || null,
   );
   const [loadingArticle, setLoadingArticle] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -51,10 +50,9 @@ const ArticleDetail = () => {
 
   useEffect(() => {
     const fetchArticleById = async () => {
-
-      if (state?.article)  // if the data send by props
-           return;
-
+      if (state?.article)
+        // if the data send by props
+        return;
 
       setLoadingArticle(true);
 
@@ -105,58 +103,51 @@ const ArticleDetail = () => {
   }, []);
 
   const mainImage = useMemo(() => {
-    return (
-      article?.multimedia?.[0]
-    );
+    return article?.multimedia?.[0];
   }, [article]);
 
-
   const readObserver = useReadObserver(() => {
-  if (article) {
-    dispatch(addToHistory(article.url));
-  }
-});
+    if (article) {
+      dispatch(addToHistory(article.url));
+    }
+  });
 
-
-  const handleSave = useCallback(() => { // save option
+  const handleSave = useCallback(() => {
+    // save option
     if (!article) return;
     if (isSaved) {
       dispatch(removeFromFavourites(article.url));
     } else {
       dispatch(addToFavourites(article.url));
     }
-  }, [ isSaved, article]);
-  
+  }, [isSaved, article]);
+
   // for handling the chips that are used
-  const handleTagClick = async (tag: string) => { 
+  const handleTagClick = async (tag: string) => {
     setSelectedTag(tag);
     setLoadingRelated(true);
     // setErrorRelated(null);
 
     try {
-      
       const articles: NYTArticle[] = await fetchTopStories();
-
 
       const filtered: NYTArticle[] = [];
 
-for (const art of articles) {
-  if (!art.des_facet) continue;
+      for (const art of articles) {
+        if (!art.des_facet) continue;
 
-  for (const facet of art.des_facet) {
-    if (facet.toLowerCase().includes(tag.toLowerCase())) {
-      filtered.push(art);
-      break; 
-    }
-  }
-}
-const shuffled = filtered.sort(() => Math.random() - 0.5);
+        for (const facet of art.des_facet) {
+          if (facet.toLowerCase().includes(tag.toLowerCase())) {
+            filtered.push(art);
+            break;
+          }
+        }
+      }
+      const shuffled = filtered.sort(() => Math.random() - 0.5);
 
-const finalArticles = shuffled.slice(0, 6);
+      const finalArticles = shuffled.slice(0, 6);
 
-setRelatedArticles(finalArticles);
-
-
+      setRelatedArticles(finalArticles);
     } catch (err) {
       console.error(err);
       setErrorRelated("Failed to load related articles.");
@@ -317,7 +308,7 @@ setRelatedArticles(finalArticles);
                     color: "inherit",
                     border: `1px solid `,
                     borderRadius: 2,
-                    padding : 2,
+                    padding: 2,
                     backgroundColor: "white",
                     cursor: "pointer",
                     transition: "transform 0.2s, boxShadow 0.2s",
@@ -343,5 +334,3 @@ setRelatedArticles(finalArticles);
 };
 
 export default ArticleDetail;
-
-

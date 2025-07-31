@@ -1,4 +1,3 @@
-
 import {
   Container,
   Typography,
@@ -23,7 +22,11 @@ import {
   fetchArticlesSuccess,
   fetchFeaturedSuccess,
 } from "../../redux/action/articlesAction";
-import { fetchTimesWireNews, fetchTopStories, fetchTrendingStories } from "../../services/apiCalls";
+import {
+  fetchTimesWireNews,
+  fetchTopStories,
+  fetchTrendingStories,
+} from "../../services/apiCalls";
 import type { AppDispatch, RootState } from "../../redux/store";
 
 const FeaturedNewsCard = lazy(
@@ -65,44 +68,40 @@ const HomePage = () => {
         if (storyType === "top") {
           const topStories = await fetchTopStories(filters.section || "home"); // for the section part data is send here
           const timeWireNews = await fetchTimesWireNews();
-          dispatch(fetchFeaturedSuccess(timeWireNews[0])); 
+          dispatch(fetchFeaturedSuccess(timeWireNews[0]));
           dispatch(fetchArticlesSuccess(topStories));
         } else if (storyType === "trending") {
-
           const trendingStories = await fetchTrendingStories();
           const timeWireNews = await fetchTimesWireNews();
-          dispatch(fetchFeaturedSuccess(timeWireNews[0])); 
+          dispatch(fetchFeaturedSuccess(timeWireNews[0]));
           dispatch(fetchArticlesSuccess(trendingStories));
         }
 
         setPage(1); // for the pagination part
       } catch (error) {
-        console.error("Error occured" , error)
+        console.error("Error occured", error);
         // dispatch(fetchArticlesFailure("Failed to load articles"));
       }
     };
 
     loadArticlesByType(); // inside the useEffect i cannot use the await or pass the async so it is called in a manner of function
-  }, [storyType, filters.section,  dispatch]);
-
-
+  }, [storyType, filters.section, dispatch]);
 
   // Get only the articles that match the selected section
-const filteredArticles = useMemo(() => {
-  const allArticles = filtered || [];
+  const filteredArticles = useMemo(() => {
+    const allArticles = filtered || [];
 
-  return allArticles.filter((article) => {
-    // If section is selected, only show matching articles
-    if (filters.section) {
-      const articleSection = article.section?.toLowerCase().trim();
-      const selectedSection = filters.section.toLowerCase().trim();
-      return articleSection === selectedSection;
-    }
-    // If no section selected, include all
-    return true;
-  });
-}, [filtered, filters]);
-
+    return allArticles.filter((article) => {
+      // If section is selected, only show matching articles
+      if (filters.section) {
+        const articleSection = article.section?.toLowerCase().trim();
+        const selectedSection = filters.section.toLowerCase().trim();
+        return articleSection === selectedSection;
+      }
+      // If no section selected, include all
+      return true;
+    });
+  }, [filtered, filters]);
 
   const isReadMemo = useCallback(
     (url: string) => readHistory.includes(url),
@@ -137,11 +136,10 @@ const filteredArticles = useMemo(() => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const bottom = 
+      const bottom =
         window.innerHeight + window.scrollY >= document.body.offsetHeight - 100; // this is used to fetch when the users came near lastArticle
       const atTop = window.scrollY > 300;
       // console.log("pages - ",page);
-      
 
       if (bottom && page * 10 < articlesWithReadStatus.length) {
         setPage((prev) => prev + 1);
@@ -197,9 +195,7 @@ const filteredArticles = useMemo(() => {
 
       {/* Title */}
       <Typography variant="h6" marginBottom={2}>
-        {storyType === "top"
-          ? "Top Stories" :
-             "Trending Stories"}
+        {storyType === "top" ? "Top Stories" : "Trending Stories"}
       </Typography>
 
       {/* Articles Grid */}

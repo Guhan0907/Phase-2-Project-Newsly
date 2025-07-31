@@ -1,6 +1,5 @@
-
-
 import {
+  SET_SAVED_TIMES_WIRE_NEWS,
   SET_SAVED_TOP_STORIES,
   SET_SAVED_TRENDING_NEWS,
   type SavedArticlesAction,
@@ -11,11 +10,13 @@ import type { NYTArticle } from "../../types/article";
 export interface SavedArticlesState {
   topStories: NYTArticle[];
   trending: NYTArticle[];
+  timesWire: NYTArticle[];
 }
 
 const initialState: SavedArticlesState = {
   topStories: [],
   trending: [],
+  timesWire: [],
 };
 
 const savedArticlesReducer = (
@@ -27,6 +28,8 @@ const savedArticlesReducer = (
       return { ...state, topStories: action.payload };
     case SET_SAVED_TRENDING_NEWS:
       return { ...state, trending: action.payload };
+    case SET_SAVED_TIMES_WIRE_NEWS:
+      return { ...state, timesWire: action.payload };
     default:
       return state;
   }

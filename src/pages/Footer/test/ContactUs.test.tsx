@@ -31,27 +31,25 @@ describe("ContactUs Component", () => {
     render(
       <MemoryRouter>
         <ContactUs />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(
-      screen.getByRole("img", { name: /contact newsly/i })
+      screen.getByRole("img", { name: /contact newsly/i }),
     ).toBeInTheDocument();
 
     expect(
       screen.getByRole("heading", {
         name: /we're still building this newsroom/i,
-      })
+      }),
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText(
-        /thank you for your interest in reaching out/i
-      )
+      screen.getByText(/thank you for your interest in reaching out/i),
     ).toBeInTheDocument();
 
     expect(
-      screen.getByText(/sit tight — our editorial team/i)
+      screen.getByText(/sit tight — our editorial team/i),
     ).toBeInTheDocument();
   });
 
@@ -59,7 +57,7 @@ describe("ContactUs Component", () => {
     render(
       <MemoryRouter>
         <ContactUs />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const backButton = screen.getByRole("button", { name: /back to news/i });

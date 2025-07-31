@@ -29,9 +29,9 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
 
   const shareUrl = window.location.href;
 
-  // for opening the menu 
+  // for opening the menu
   const handleMenuOpen = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget); 
+    setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
@@ -42,7 +42,7 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
     try {
       await navigator.clipboard.writeText(shareUrl);
     } catch (err) {
-      console.log("There is a error in this option sorry")
+      console.log("There is a error in this option sorry");
     } finally {
       setSnackbarOpen(true);
       handleMenuClose();
@@ -78,7 +78,7 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
 
       {/* Share Menu */}
       <Menu
-        anchorEl={anchorEl}   
+        anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
         anchorOrigin={{
@@ -95,8 +95,10 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
 
         <MenuItem
           component="a"
-
-          onClick={() => {console.log("Whats App opened ---") ; handleMenuClose}}
+          onClick={() => {
+            console.log("Whats App opened ---");
+            handleMenuClose;
+          }}
         >
           <ListItemIcon>
             <WhatsAppIcon fontSize="small" />
@@ -105,7 +107,10 @@ const ArticleDetailAction = ({ isSaved, onSave, articleTitle }: Props) => {
         </MenuItem>
 
         <MenuItem
-          onClick={() => {console.log("Open to Mail ---"); handleMenuClose}}
+          onClick={() => {
+            console.log("Open to Mail ---");
+            handleMenuClose;
+          }}
         >
           <ListItemIcon>
             <EmailIcon fontSize="small" />

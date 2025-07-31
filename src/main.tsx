@@ -13,7 +13,7 @@ import Favourites from "./pages/Favourites/Favourites";
 import AuthPage from "./pages/Login/AuthPage";
 import ProtectedRoutes from "./pages/ProtectedRoutes/ProtectedRoutes";
 import ContactUs from "./pages/Footer/ContactUs";
-import ErrorPage from "./services/ErrorPage";
+// import ErrorPage from "./services/ErrorPage";
 
 const theme = createTheme({
   palette: {
@@ -75,18 +75,18 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/error",
-    element: <ErrorPage />,
-  },
+  // {
+  //   path: "/error",
+  //   element: <ErrorPage />,
+  // },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <Provider store={store}>
-      <ThemeProvider theme={theme}>
-        <ErrorBoundary>
-          <RouterProvider router={router} />
-        </ErrorBoundary>
-      </ThemeProvider>
-    </Provider>
+  <Provider store={store}>
+    <ThemeProvider theme={theme}>
+      <ErrorBoundary>
+        <RouterProvider router={router} />
+      </ErrorBoundary>
+    </ThemeProvider>
+  </Provider>,
 );

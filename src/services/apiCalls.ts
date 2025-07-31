@@ -19,8 +19,6 @@ export const fetchTrendingStories = async () => {
   return res.data.results;
 };
 
-
-
 export const fetchTimesWireNews = async () => {
   const res = await API.get(`/svc/news/v3/content/all/all.json`);
   return res.data.results;
@@ -44,7 +42,6 @@ export const fetchTopStoriesBySection = async (section: string) => {
   const res = await API.get(`/svc/topstories/v2/${section}.json`);
   return res.data.results;
 };
-
 
 // for searching
 export const searchArticlesByQuery = async (query: string) => {
